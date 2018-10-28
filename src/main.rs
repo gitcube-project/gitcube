@@ -1,10 +1,11 @@
 extern crate actix_web;
-use actix_web::{App, server, HttpRequest, HttpResponse, http::ContentEncoding};
+use actix_web::{App, server, HttpRequest, HttpResponse};
 
 pub mod template;
 
 fn index(req: &HttpRequest) -> HttpResponse {
-    let mut contents = template::read_template("public/index.tpl");
+    let path = "public/index.tpl".to_string();
+    let mut contents = template::read(&path);
     HttpResponse::Ok()
         .content_type("text/html")
         .body(contents)

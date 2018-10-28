@@ -470,6 +470,7 @@ name = "gitcube"
 version = "0.1.0"
 dependencies = [
  "actix-web 0.7.13 (registry+https://github.com/rust-lang/crates.io-index)",
+ "regex 1.0.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
