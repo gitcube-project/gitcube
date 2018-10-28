@@ -1,11 +1,13 @@
 extern crate actix_web;
 use actix_web::{App, server, HttpRequest, HttpResponse};
 
+use std::collections::HashMap;
+
 pub mod template;
 
 fn index(req: &HttpRequest) -> HttpResponse {
     let path = "public/index.tpl".to_string();
-    let mut contents = template::read(&path);
+    let mut contents = template::read(&path, &HashMap::new());
     HttpResponse::Ok()
         .content_type("text/html")
         .body(contents)
