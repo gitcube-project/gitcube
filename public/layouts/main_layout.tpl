@@ -148,8 +148,8 @@
 
     <div class="ui container">
       <div class="ui large secondary inverted pointing menu">
-        <a class="toc item">
-          <img class="ui small circular image" src="/logo/gitcube_small.png">
+        <a class="item">
+          <img class="ui mini circular image" src="/logo/gitcube_small.png">
         </a>
         <a class="active item">Home</a>
         <a class="item">Explore</a>
