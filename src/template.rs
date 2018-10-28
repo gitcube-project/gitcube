@@ -45,12 +45,13 @@ fn section_replace(source: &String) -> String{
 
     // get all sections
     {
-        let mut builder = RegexBuilder::new(r"^@section\('(?P<section_name>.*)'\)(?P<section_content>.*)@endsection$");
+        let mut builder = RegexBuilder::new(r"@section\('(?P<section_name>.*?)'\)(?P<section_content>.*?)@endsection");
         builder.multi_line(true);
         builder.dot_matches_new_line(true);
         let re = builder.build().unwrap();
-        
+
         let result = re.replace_all(&source, |caps: &Captures| {
+            println!("section:'{}'", caps["section_name"].to_string());
             section_map.insert(caps["section_name"].to_string(), caps["section_content"].to_string());
             ""
         });
