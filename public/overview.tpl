@@ -9,7 +9,7 @@
     <a class="item" href="#">Followers</a>
     <a class="item" href="#">Following</a>
 </div>
-<div class="ui bottom attached active tab segment">
+<div class="ui bottom attached active tab segment" style="min-width: 830px;">
     <div class="ui two column grid">
         <div class="row">
             <div class="column">
@@ -66,15 +66,30 @@
             <div class="column"></div>
         </div>
     </div>
-    <div id="cal-heatmap"></div>
+    <div class="ui two column divided grid">
+        <div id="cal-heatmap" class="twelve wide column" style="min-width: 660px;"></div>
+        <div class="two wide column">
+            <div class="ui buttons vertical">
+                <button class="ui button" id="previousSelector-a-previous">previous</button>
+                <button class="ui button" id="previousSelector-a-next">next</button>
+            </div>
+        </div>
+    </div>
 </div>
-
 
 @endsection
 
 @section('cal-heatmap')
 <script type="text/javascript">
 	var cal = new CalHeatMap();
-	cal.init({ itemSelector: "cal-heatmap"});
+    cal.init({ itemSelector: "#cal-heatmap",
+        previousSelector: "#previousSelector-a-previous",
+        nextSelector: "#previousSelector-a-next",
+        domain: "year",
+        subDomain: "day",
+        data: "datas-years.json",
+        cellSize: 10,
+        range: 1,
+        legend: [20, 40, 60, 80]});
 </script>
 @endsection
