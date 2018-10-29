@@ -25,8 +25,16 @@ fn profile(req: &HttpRequest) -> HttpResponse {
     let path = match re.captures(query){
         None => "public/overview.tpl".to_string(),
         Some(caps) => {
-            if &caps["tab"]=="repositories" {
+            if &caps["tab"]=="overview" {
+                "public/overview.tpl".to_string()
+            }else if &caps["tab"]=="repositories" {
                 "public/repositories.tpl".to_string()
+            }else if &caps["tab"]=="stars" {
+                "public/stars.tpl".to_string()
+            }else if &caps["tab"]=="followers" {
+                "public/followers.tpl".to_string()
+            }else if &caps["tab"]=="followering" {
+                "public/followering.tpl".to_string()
             }else{
                 "public/overview.tpl".to_string()
             }
