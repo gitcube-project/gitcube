@@ -22,7 +22,8 @@ fn main() {
         App::new()
             .resource("/", |r| r.f(index))
             .handler("/logo",
-            fs::StaticFiles::new("public/logo").unwrap().show_files_listing()),
+            fs::StaticFiles::new("public/logo").unwrap().show_files_listing())
+            .resource("/{name}", |r| r.f(index)),
     ]})
     .bind("127.0.0.1:8088")
     .unwrap()
