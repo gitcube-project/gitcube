@@ -1,5 +1,6 @@
 use std::fs::File;
 use std::io::prelude::*;
+use std::vec::Vec;
 use std::collections::HashMap;
 use std::path::Path;
 use std::path::PathBuf;
@@ -40,7 +41,7 @@ fn expand_extend(path: &String) -> String{
 }
 
 fn section_replace(source: &String) -> String{
-    let mut section_map : HashMap<String, String> = HashMap::new();
+    let mut section_list: Vec<(String,String)> = Vec::new();
     let mut rst = String::new();
 
     // get all sections
@@ -52,7 +53,7 @@ fn section_replace(source: &String) -> String{
 
         let result = re.replace_all(&source, |caps: &Captures| {
             println!("section:'{}'", caps["section_name"].to_string());
-            section_map.insert(caps["section_name"].to_string(), caps["section_content"].to_string());
+            section_list.push((caps["section_name"].to_string(), caps["section_content"].to_string()));
             ""
         });
         rst = result.to_string();
@@ -60,7 +61,7 @@ fn section_replace(source: &String) -> String{
 
     // replace all yield
     {
-        for (key, value) in &section_map{
+        for (key, value) in &section_list{
             let re = Regex::new(&format!(r"@yield\('{section_name}'\)", section_name = &key)).unwrap();
             rst = re.replace(&rst, value.as_str()).to_string();
         }
@@ -68,8 +69,8 @@ fn section_replace(source: &String) -> String{
 
     // replace remained yield
     {
-        let re = Regex::new(r"@yield\('.*'\)").unwrap();
-        rst = re.replace(&rst, "").to_string();
+        let re = Regex::new(r"@yield\('.*?'\)").unwrap();
+        rst = re.replace_all(&rst, "").to_string();
     }
 
     return rst;

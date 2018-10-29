@@ -10,7 +10,7 @@
   <!-- Site Properties -->
   <title>@yield('title')</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
-
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
 
   @yield('css')
   <style type="text/css">
@@ -114,9 +114,13 @@
       }
     }
   </style>
-  @yield('js')
+ 
   <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+  <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
+  <script type="text/javascript" src="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
+  @yield('js')
+
   <script>
     $(document)
       .ready(function () {
@@ -143,63 +147,64 @@
 </head>
 
 <body>
-  <!-- Page Contents -->
-  <div class="ui vertical masthead center aligned segment">
 
+
+  <div class="ui large secondary menu">
     <div class="ui container">
-      <div class="ui large secondary menu">
-        <a class="item">
-          <img class="ui mini circular image" src="/logo/gitcube_small.png">
-        </a>
-        <div class="item">
-          <div class="ui icon input">
-            <input type="text" placeholder="Search...">
-            <i class="search link icon"></i>
-          </div>
-        </div>
-        <a class="active item">Home</a>
-        <a class="item">Explore</a>
-        <a class="item">Help</a>
-        <div class="right item">
-          <a class="ui primary button">Sign in</a>
-          <a class="ui button">Sign Up</a>
+      <a class="item">
+        <img class="ui mini circular image" src="/logo/gitcube_small.png">
+      </a>
+      <div class="item">
+        <div class="ui icon input">
+          <input type="text" placeholder="Search...">
+          <i class="search link icon"></i>
         </div>
       </div>
+      <a class="active item">Home</a>
+      <a class="item">Explore</a>
+      <a class="item">Help</a>
+      <div class="right item">
+        <a class="ui primary button">Sign in</a>
+        <a class="ui button">Sign Up</a>
+      </div>
     </div>
+  </div>
+  <div class="ui divider"></div>
 
+  @yield('content')
 
-    @yield('content')
-
-    <div class="ui vertical footer segment">
-      <div class="ui container">
-        <div class="ui stackable inverted divided equal height stackable grid">
-          <div class="seven wide column">
-            <div class="ui horizontal list">
-              <div class="disabled item" href="#">© 2018 GitCube, Inc.</div>
-              <a class="item" href="#">Terms</a>
-              <a class="item" href="#">Privacy</a>
-              <a class="item" href="#">Contact</a>
-            </div>
+  <div class="ui horizontal divider">
+    GitCube
+  </div>
+  <div class="ui vertical footer segment">
+    <div class="ui container">
+      <div class="ui stackable inverted divided equal height stackable grid">
+        <div class="seven wide column">
+          <div class="ui horizontal list">
+            <div class="disabled item" href="#">© 2018 GitCube, Inc.</div>
+            <a class="item" href="#">Terms</a>
+            <a class="item" href="#">Privacy</a>
+            <a class="item" href="#">Contact</a>
           </div>
-          <div class="two wide column">
-            <a href="#">
-              <img class="ui mini circular image centered" src="/logo/gitcube_small.png">
-            </a>
-          </div>
-          <div class="seven wide column">
-            <div class="ui right floated horizontal list">
-                <a class="item" href="#">Status</a>
-              <a class="item" href="#">Help</a>
-              <a class="item" href="#">Contact</a>
-              <a class="item" href="#">API</a>
-              <a class="item" href="#">About Us</a>
-            </div>
+        </div>
+        <div class="two wide column">
+          <a href="#">
+            <img class="ui mini circular image centered" src="/logo/gitcube_small.png">
+          </a>
+        </div>
+        <div class="seven wide column">
+          <div class="ui right floated horizontal list">
+            <a class="item" href="#">Status</a>
+            <a class="item" href="#">Help</a>
+            <a class="item" href="#">Contact</a>
+            <a class="item" href="#">API</a>
+            <a class="item" href="#">About Us</a>
           </div>
         </div>
       </div>
     </div>
   </div>
-
+  @yield('cal-heatmap')
 </body>
 
 </html>

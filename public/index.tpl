@@ -4,14 +4,6 @@
 home - GitCube
 @endsection
 
-@section('css')
-
-@endsection
-
-@section('js')
-
-@endsection
-
 @section('content')
 <div class="ui text container">
     <h1 class="ui header">
