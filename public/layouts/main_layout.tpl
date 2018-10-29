@@ -147,10 +147,16 @@
   <div class="ui inverted vertical masthead center aligned segment">
 
     <div class="ui container">
-      <div class="ui large secondary inverted pointing menu">
+      <div class="ui large secondary inverted menu">
         <a class="item">
           <img class="ui mini circular image" src="/logo/gitcube_small.png">
         </a>
+        <div class="item">
+          <div class="ui icon input inverted">
+            <input type="text" placeholder="Search...">
+            <i class="search link icon"></i>
+          </div>
+        </div>
         <a class="active item">Home</a>
         <a class="item">Explore</a>
         <a class="item">Help</a>
@@ -164,35 +170,34 @@
 
     @yield('content')
 
-    <div class="ui inverted vertical footer segment">
+    <div class="ui vertical footer segment">
       <div class="ui container">
         <div class="ui stackable inverted divided equal height stackable grid">
-          <div class="three wide column">
-            <h4 class="ui inverted header">About</h4>
-            <div class="ui inverted link list">
-              <a href="#" class="item">Sitemap</a>
-              <a href="#" class="item">Contact Us</a>
-              <a href="#" class="item">Religious Ceremonies</a>
-              <a href="#" class="item">Gazebo Plans</a>
+          <div class="seven wide column">
+            <div class="ui horizontal list">
+              <div class="disabled item" href="#">© 2018 GitCube, Inc.</div>
+              <a class="item" href="#">Terms</a>
+              <a class="item" href="#">Privacy</a>
+              <a class="item" href="#">Contact</a>
             </div>
           </div>
-          <div class="three wide column">
-            <h4 class="ui inverted header">Services</h4>
-            <div class="ui inverted link list">
-              <a href="#" class="item">Banana Pre-Order</a>
-              <a href="#" class="item">DNA FAQ</a>
-              <a href="#" class="item">How To Access</a>
-              <a href="#" class="item">Favorite X-Men</a>
-            </div>
+          <div class="two wide column">
+            <a href="#">
+              <img class="ui mini circular image centered" src="/logo/gitcube_small.png">
+            </a>
           </div>
           <div class="seven wide column">
-            <h4 class="ui inverted header">Footer Header</h4>
-            <p>Extra space for a call to action inside the footer that could help re-engage users.</p>
+            <div class="ui right floated horizontal list">
+                <a class="item" href="#">Status</a>
+              <a class="item" href="#">Help</a>
+              <a class="item" href="#">Contact</a>
+              <a class="item" href="#">API</a>
+              <a class="item" href="#">About Us</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
 </body>
 
