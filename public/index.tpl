@@ -14,7 +14,7 @@ home - GitCube
 
 @section('content')
 <div class="ui text container">
-    <h1 class="ui inverted header">
+    <h1 class="ui header">
         Imagine-a-Company
     </h1>
     <h2>Do whatever you want when you want to.</h2>

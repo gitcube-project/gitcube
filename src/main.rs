@@ -7,7 +7,15 @@ pub mod template;
 
 fn index(req: &HttpRequest) -> HttpResponse {
     let path = "public/index.tpl".to_string();
-    let mut contents = template::read(&path, &HashMap::new());
+    let contents = template::read(&path, &HashMap::new());
+    HttpResponse::Ok()
+        .content_type("text/html")
+        .body(contents)
+}
+
+fn profile(req: &HttpRequest) -> HttpResponse {
+    let path = "public/overview.tpl".to_string();
+    let contents = template::read(&path, &HashMap::new());
     HttpResponse::Ok()
         .content_type("text/html")
         .body(contents)
@@ -23,7 +31,7 @@ fn main() {
             .resource("/", |r| r.f(index))
             .handler("/logo",
             fs::StaticFiles::new("public/logo").unwrap().show_files_listing())
-            .resource("/{name}", |r| r.f(index)),
+            .resource("/{name}", |r| r.f(profile)),
     ]})
     .bind("127.0.0.1:8088")
     .unwrap()

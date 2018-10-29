@@ -144,15 +144,15 @@
 
 <body>
   <!-- Page Contents -->
-  <div class="ui inverted vertical masthead center aligned segment">
+  <div class="ui vertical masthead center aligned segment">
 
     <div class="ui container">
-      <div class="ui large secondary inverted menu">
+      <div class="ui large secondary menu">
         <a class="item">
           <img class="ui mini circular image" src="/logo/gitcube_small.png">
         </a>
         <div class="item">
-          <div class="ui icon input inverted">
+          <div class="ui icon input">
             <input type="text" placeholder="Search...">
             <i class="search link icon"></i>
           </div>
@@ -161,8 +161,8 @@
         <a class="item">Explore</a>
         <a class="item">Help</a>
         <div class="right item">
-          <a class="ui inverted button">Log in</a>
-          <a class="ui inverted button">Sign Up</a>
+          <a class="ui primary button">Sign in</a>
+          <a class="ui button">Sign Up</a>
         </div>
       </div>
     </div>
@@ -198,6 +198,7 @@
         </div>
       </div>
     </div>
+  </div>
 
 </body>
 
