@@ -7,9 +7,9 @@ home - GitCube
 @section('content')
 <div class="ui text container">
     <h1 class="ui header">
-        Imagine-a-Company
+        GitCube
     </h1>
-    <h2>Do whatever you want when you want to.</h2>
+    <h2>A painless, self-hosted Git service</h2>
     <div class="ui huge primary button">Get Started <i class="right arrow icon"></i></div>
 </div>
 

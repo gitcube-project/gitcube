@@ -16,6 +16,22 @@ fn index(req: &HttpRequest) -> HttpResponse {
         .body(contents)
 }
 
+fn signin(req: &HttpRequest) -> HttpResponse {
+    let path = "public/signin.tpl".to_string();
+    let contents = template::read(&path, &HashMap::new());
+    HttpResponse::Ok()
+        .content_type("text/html")
+        .body(contents)
+}
+
+fn signup(req: &HttpRequest) -> HttpResponse {
+    let path = "public/signup.tpl".to_string();
+    let contents = template::read(&path, &HashMap::new());
+    HttpResponse::Ok()
+        .content_type("text/html")
+        .body(contents)
+}
+
 fn profile(req: &HttpRequest) -> HttpResponse {
     let query = match req.uri().query(){
         None => "",
@@ -52,8 +68,8 @@ fn main() {
     server::new(|| {vec![
         App::new()
             .prefix("/user")
-            .resource("/signin", |r| r.f(|r| HttpResponse::Ok()))
-            .resource("/signup", |r| r.f(|r| HttpResponse::Ok())),
+            .resource("/signin", |r| r.f(signin))
+            .resource("/signup", |r| r.f(signup)),
         App::new()
             .resource("/", |r| r.f(index))
             .handler("/logo",

@@ -147,8 +147,6 @@
 </head>
 
 <body>
-
-
   <div class="ui large secondary menu">
     <div class="ui container">
       <a class="item">

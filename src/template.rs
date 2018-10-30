@@ -4,6 +4,8 @@ use std::vec::Vec;
 use std::collections::HashMap;
 use std::path::Path;
 use std::path::PathBuf;
+use std::fs;
+use std::fs::OpenOptions;
 
 extern crate regex;
 use regex::Regex;
@@ -11,10 +13,48 @@ use regex::Captures;
 use regex::RegexBuilder;
 
 pub fn read(path: &String, var_map: &HashMap<String,String>) -> String{
-    println!("loading template:'{}'", path);
-    let expand_tpl = expand_extend(path);
-    let section_replaced_tpl = section_replace(&expand_tpl);
-    replace_variables(&section_replaced_tpl, var_map)
+    let cache_path :String= String::new() + path + ".cache";
+    let mut use_cache :bool = false;
+    if Path::new(&cache_path).exists(){
+        let source_meta = fs::metadata(path).unwrap();
+        let cache_meta = fs::metadata(&cache_path).unwrap();
+        if source_meta.modified().unwrap() < cache_meta.modified().unwrap(){
+            use_cache = true;
+        }else{
+            use_cache = false;
+        }
+    }else{
+        use_cache = false;
+    }
+    
+    if use_cache{
+        println!("loading cache:'{}'", &cache_path);
+        let cache_source = read_cache(&cache_path);
+        replace_variables(&cache_source, var_map)
+    }else{
+        println!("loading template:'{}'", path);
+        let expand_tpl = expand_extend(path);
+        let section_replaced_tpl = section_replace(&expand_tpl);
+        // save cache
+        save_cache(&cache_path, &section_replaced_tpl);
+        // 
+        replace_variables(&section_replaced_tpl, var_map)
+    }
+}
+
+fn read_cache(path:&String) -> String{
+    let mut f = File::open(path).expect("file not found");
+    let mut contents = String::new();
+    f.read_to_string(&mut contents)
+        .expect("something went wrong reading the file");
+    return contents;
+}
+
+fn save_cache(path:&String, contents:&String){
+    let mut file = OpenOptions::new().write(true)
+                            .create(true)
+                            .open(path).unwrap();
+    file.write_fmt(format_args!("{}", &contents)).unwrap();
 }
 
 fn expand_extend(path: &String) -> String{
