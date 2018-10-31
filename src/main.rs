@@ -1,5 +1,5 @@
 extern crate actix_web;
-use actix_web::{App, fs, server, HttpRequest, HttpResponse};
+use actix_web::{App, http::Method, fs, server, HttpRequest, HttpResponse};
 
 extern crate regex;
 use regex::Regex;
@@ -35,7 +35,7 @@ fn index(req: &HttpRequest) -> HttpResponse {
         .body(&contents)
 }
 
-fn signin(req: &HttpRequest) -> HttpResponse {
+fn signin_page(req: &HttpRequest) -> HttpResponse {
     let contents = TERA.render("signin.html", &json!({
         "name": "John Doe"
     })).unwrap();
@@ -43,6 +43,17 @@ fn signin(req: &HttpRequest) -> HttpResponse {
         .content_type("text/html")
         .body(&contents)
 }
+
+
+fn signin_action(req: &HttpRequest) -> HttpResponse {
+    let contents = TERA.render("signin.html", &json!({
+        "name": "John Doe"
+    })).unwrap();
+    HttpResponse::Ok()
+        .content_type("text/html")
+        .body(&contents)
+}
+
 
 fn signup(req: &HttpRequest) -> HttpResponse {
     let contents = TERA.render("signup.html", &json!({
@@ -91,7 +102,10 @@ fn main() {
     server::new(|| {vec![
         App::new()
             .prefix("/user")
-            .resource("/signin", |r| r.f(signin))
+            .resource("/signin", |r|{
+                r.method(Method::GET).f(signin_page);
+                r.method(Method::POST).f(signin_action);
+            })
             .resource("/signup", |r| r.f(signup)),
         App::new()
             .resource("/", |r| r.f(index))

@@ -2,19 +2,63 @@
 
 {% block css %}
 <style type="text/css">
+    /*
     body {
         background-color: #DADADA;
     }
+*/
 
     body>.grid {
         height: 80%;
     }
 
     .column {
-        max-width: 450px;
+        max-width: 550px;
     }
 </style>
 {% endblock css %}
+
+{% block js %}
+<script>
+    $(document)
+        .ready(function () {
+            $('.ui.form')
+                .form({
+                    fields: {
+                        email: {
+                            identifier: 'email',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: 'Please enter your e-mail'
+                                },
+                                {
+                                    type: 'email',
+                                    prompt: 'Please enter a valid e-mail'
+                                }
+                            ]
+                        },
+                        password: {
+                            identifier: 'password',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: 'Please enter your password'
+                                },
+                                {
+                                    type: 'length[6]',
+                                    prompt: 'Your password must be at least 6 characters'
+                                }
+                            ]
+                        }
+                    }
+                })
+                ;
+        })
+        ;
+</script>
+
+{% endblock js %}
 
 {% block content %}
 <div class="ui middle aligned center aligned grid">
@@ -25,7 +69,7 @@
                 Sign in to GitCube
             </div>
         </h2>
-        <form class="ui large form">
+        <form class="ui large form" action="/user/signin" method="post">
             <div class="ui stacked segment">
                 <div class="field">
                     <div class="ui left icon input">
