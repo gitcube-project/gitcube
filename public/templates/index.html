@@ -1,10 +1,10 @@
-@extends('layouts/main_layout.tpl')
+{% extends "layouts/main_layout.html" %}
 
-@section('title')
+{% block title %}
 home - GitCube
-@endsection
+{% endblock title %}
 
-@section('content')
+{% block content %}
 <div class="ui text container">
     <h1 class="ui header">
         GitCube
@@ -74,4 +74,4 @@ home - GitCube
         <a class="ui large button">I'm Still Quite Interested</a>
     </div>
 </div>
-@endsection
+{% endblock content %}

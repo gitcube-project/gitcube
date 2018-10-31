@@ -1,7 +1,7 @@
-@extends('profile.tpl')
+{% extends "profile.html" %}
 
 
-@section('overview')
+{% block overview %}
 <div class="ui top attached tabular menu">
     <a class="item" href="#">Overview</a>
     <a class="active item" href="#">Repositories</a>
@@ -12,6 +12,4 @@
 <div class="ui bottom attached active tab segment">
     
 </div>
-
-
-@endsection
+{% endblock overview %}

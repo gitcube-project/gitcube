@@ -1,6 +1,6 @@
-@extends('layouts/main_layout.tpl')
+{% extends "layouts/main_layout.html" %}
 
-@section('css')
+{% block css %}
 <style type="text/css">
     body {
         background-color: #DADADA;
@@ -14,9 +14,9 @@
         max-width: 450px;
     }
 </style>
-@endsection
+{% endblock css %}
 
-@section('content')
+{% block content %}
 <div class="ui middle aligned center aligned grid">
     <div class="column">
         <h2 class="ui teal image header">
@@ -39,7 +39,7 @@
                         <input type="password" name="password" placeholder="Password">
                     </div>
                 </div>
-                <div class="ui fluid large primary submit button">Sign In</div>
+                <div class="ui fluid large primary submit button">Sign Up</div>
             </div>
 
             <div class="ui error message"></div>
@@ -52,4 +52,4 @@
     </div>
 </div>
 
-@endsection
+{% endblock content %}

@@ -8,11 +8,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <!-- Site Properties -->
-  <title>@yield('title')</title>
+  <title>{% block title %}{% endblock title %}</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
 
-  @yield('css')
+  {% block css %}
+  {% endblock css %}
   <style type="text/css">
     .hidden.menu {
       display: none;
@@ -119,7 +120,8 @@
   <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
   <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
   <script type="text/javascript" src="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
-  @yield('js')
+  {% block js %}
+  {% endblock js %}
 
   <script>
     $(document)
@@ -169,7 +171,8 @@
   </div>
   <div class="ui divider"></div>
 
-  @yield('content')
+  {% block content %}
+  {% endblock content %}
 
   <div class="ui horizontal divider">
     GitCube
@@ -202,7 +205,8 @@
       </div>
     </div>
   </div>
-  @yield('cal-heatmap')
+  {% block cal_heatmap %}
+  {% endblock cal_heatmap %}
 </body>
 
 </html>

@@ -1,35 +1,56 @@
 extern crate actix_web;
 use actix_web::{App, fs, server, HttpRequest, HttpResponse};
 
-use std::collections::HashMap;
-
 extern crate regex;
 use regex::Regex;
 
-pub mod template;
+#[macro_use]
+extern crate tera;
+use tera::Tera;
+// use tera::Context;
+
+#[macro_use]
+extern crate serde_json;
+
+#[macro_use]
+extern crate lazy_static;
+
+lazy_static! {
+    pub static ref TERA: Tera = {
+        let mut tera = compile_templates!("public/templates/**/*");
+        // and we can add more things to our instance if we want to
+        tera.autoescape_on(vec!["html"]);
+        tera
+    };
+}
+
+
 
 fn index(req: &HttpRequest) -> HttpResponse {
-    let path = "public/index.tpl".to_string();
-    let contents = template::read(&path, &HashMap::new());
+    let contents = TERA.render("index.html", &json!({
+        "name": "John Doe"
+    })).unwrap();
     HttpResponse::Ok()
         .content_type("text/html")
-        .body(contents)
+        .body(&contents)
 }
 
 fn signin(req: &HttpRequest) -> HttpResponse {
-    let path = "public/signin.tpl".to_string();
-    let contents = template::read(&path, &HashMap::new());
+    let contents = TERA.render("signin.html", &json!({
+        "name": "John Doe"
+    })).unwrap();
     HttpResponse::Ok()
         .content_type("text/html")
-        .body(contents)
+        .body(&contents)
 }
 
 fn signup(req: &HttpRequest) -> HttpResponse {
-    let path = "public/signup.tpl".to_string();
-    let contents = template::read(&path, &HashMap::new());
+    let contents = TERA.render("signup.html", &json!({
+        "name": "John Doe"
+    })).unwrap();
     HttpResponse::Ok()
         .content_type("text/html")
-        .body(contents)
+        .body(&contents)
 }
 
 fn profile(req: &HttpRequest) -> HttpResponse {
@@ -39,29 +60,31 @@ fn profile(req: &HttpRequest) -> HttpResponse {
     };
     let re = Regex::new(r"(?:(?:&|^)tab=(?P<tab>[a-zA-Z]+)(?:&|$))").unwrap();
     let path = match re.captures(query){
-        None => "public/overview.tpl".to_string(),
+        None => "overview.html",
         Some(caps) => {
             if &caps["tab"]=="overview" {
-                "public/overview.tpl".to_string()
+                "overview.html"
             }else if &caps["tab"]=="repositories" {
-                "public/repositories.tpl".to_string()
+                "repositories.html"
             }else if &caps["tab"]=="stars" {
-                "public/stars.tpl".to_string()
+                "stars.html"
             }else if &caps["tab"]=="followers" {
-                "public/followers.tpl".to_string()
+                "followers.html"
             }else if &caps["tab"]=="followering" {
-                "public/followering.tpl".to_string()
+                "followering.html"
             }else{
-                "public/overview.tpl".to_string()
+                "overview.html"
             }
         }
     };
 
-    let contents = template::read(&path, &HashMap::new());
+    let contents = TERA.render(path, &json!({
+        "name": "John Doe"
+    })).unwrap();
     
     HttpResponse::Ok()
         .content_type("text/html")
-        .body(contents)
+        .body(&contents)
 }
 
 fn main() {
