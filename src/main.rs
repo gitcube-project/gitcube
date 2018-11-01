@@ -76,7 +76,10 @@ fn main() {
             .resource("/signout", |r|{
                 r.method(Method::GET).f(controllers::signout_action)
             })
-            .resource("/signup", |r| r.f(controllers::signup))
+            .resource("/signup", |r|{
+                r.method(Method::GET).f(controllers::signup_page);
+                r.method(Method::POST).with(controllers::signup_action)
+            })
             .resource("", |r| r.f(controllers::index))
             .resource("/", |r| r.f(controllers::index))
             .resource("/{name:[0-9a-zA-Z]+}", |r| r.f(controllers::profile))

@@ -18,6 +18,62 @@
 </style>
 {% endblock css %}
 
+{% block js %}
+<script>
+    $(document)
+        .ready(function () {
+            $('.ui.form')
+                .form({
+                    fields: {
+                        name: {
+                            identifier: 'name',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: 'Please enter your name'
+                                },
+                                {
+                                    type: 'regExp',
+                                    value: /[a-zA-Z0-9_]{1,32}/i,
+                                    prompt: 'Please enter a valid user name'
+                                }
+                            ]
+                        },
+                        email: {
+                            identifier: 'email',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: 'Please enter your e-mail'
+                                },
+                                {
+                                    type: 'email',
+                                    prompt: 'Please enter a valid e-mail'
+                                }
+                            ]
+                        },
+                        password: {
+                            identifier: 'password',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: 'Please enter your password'
+                                },
+                                {
+                                    type: 'length[6]',
+                                    prompt: 'Your password must be at least 6 characters'
+                                }
+                            ]
+                        }
+                    }
+                })
+                ;
+        })
+        ;
+</script>
+
+{% endblock js %}
+
 {% block content %}
 <div class="ui middle aligned center aligned grid">
     <div class="column">
@@ -27,8 +83,14 @@
                 Sign in to GitCube
             </div>
         </h2>
-        <form class="ui large form">
+        <form class="ui large form" action="/signup" method="post">
             <div class="ui stacked segment">
+                <div class="field">
+                    <div class="ui left icon input">
+                        <i class="user icon"></i>
+                        <input type="text" name="name" placeholder="User name">
+                    </div>
+                </div>
                 <div class="field">
                     <div class="ui left icon input">
                         <i class="user icon"></i>

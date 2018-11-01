@@ -44,7 +44,7 @@ pub fn signin_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
         // if ok save in session
         req.session().set("email", form["email"].clone()).unwrap();
         
-        HttpResponse::TemporaryRedirect().header("Location", "/").finish()
+        HttpResponse::Found().header("Location", "/").finish()
     }else{
         HttpResponse::BadRequest().finish()
     }
@@ -65,15 +65,7 @@ pub fn signout_action(req: &HttpRequest<AppEnv>) -> HttpResponse {
     }
 }
 
-pub fn signup(req: &HttpRequest<AppEnv>) -> HttpResponse {
-    let state = req.state();
-    let new_user = NewUser{user_name: "123".to_string(),
-                            user_email: "123@qq.com".to_string(),
-                            user_password: "123123123".to_string()};
-    diesel::insert_into(users::table)
-        .values(&new_user)
-        .execute(&state.connection).unwrap();
-           
+pub fn signup_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let mut context = Context::new();
     if let Some(email) = req.session().get::<String>("email").unwrap(){
         context.insert("email", &email);
@@ -83,6 +75,24 @@ pub fn signup(req: &HttpRequest<AppEnv>) -> HttpResponse {
         .content_type("text/html")
         .body(&contents)
 }
+
+pub fn signup_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, String>>)) -> HttpResponse {
+    let state = req.state();
+    if form.contains_key("name") && 
+    form.contains_key("email") &&
+    form.contains_key("password"){
+        let new_user = NewUser{user_name: form["name"].clone(),
+                            user_email: form["email"].clone(),
+                            user_password: form["password"].clone()};
+        diesel::insert_into(users::table)
+            .values(&new_user)
+            .execute(&state.connection).unwrap();
+        HttpResponse::Found().header("Location", "/signin").finish()
+    }else{
+        HttpResponse::BadRequest().finish()
+    }
+}
+
 
 pub fn profile(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let mut context = Context::new();
