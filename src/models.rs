@@ -1,6 +1,4 @@
 use super::schema::users;
-use super::Queryable;
-use super::Insertable;
 
 #[derive(Queryable)]
 pub struct User {

@@ -48,7 +48,6 @@ pub fn signin_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
     }else{
         HttpResponse::BadRequest().finish()
     }
-    
 }
 
 
