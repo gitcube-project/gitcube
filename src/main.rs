@@ -28,6 +28,8 @@ use dotenv::dotenv;
 use std::env;
 
 pub mod controllers;
+pub mod models;
+pub mod schema;
 
 lazy_static! {
     pub static ref TERA: Tera = {

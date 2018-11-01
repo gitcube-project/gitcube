@@ -10,6 +10,13 @@ use tera::Context;
 use super::TERA;
 use super::AppEnv;
 
+use diesel::prelude::*;
+
+use super::models::{User, NewUser};
+use super::schema::users;
+use super::schema::users::dsl::*;
+
+
 pub fn index(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let mut context = Context::new();
     if let Some(email) = req.session().get::<String>("email").unwrap(){
@@ -59,7 +66,14 @@ pub fn signout_action(req: &HttpRequest<AppEnv>) -> HttpResponse {
 }
 
 pub fn signup(req: &HttpRequest<AppEnv>) -> HttpResponse {
-    
+    let state = req.state();
+    let new_user = NewUser{user_name: "123".to_string(),
+                            user_email: "123@qq.com".to_string(),
+                            user_password: "123123123".to_string()};
+    diesel::insert_into(users::table)
+        .values(&new_user)
+        .execute(&state.connection).unwrap();
+           
     let mut context = Context::new();
     if let Some(email) = req.session().get::<String>("email").unwrap(){
         context.insert("email", &email);
