@@ -12,12 +12,20 @@ extern crate regex;
 extern crate tera;
 use tera::Tera;
 
-
 #[macro_use]
 extern crate serde_json;
 
 #[macro_use]
 extern crate lazy_static;
+
+#[macro_use]
+extern crate diesel;
+extern crate dotenv;
+
+use diesel::prelude::*;
+use diesel::mysql::MysqlConnection;
+use dotenv::dotenv;
+use std::env;
 
 pub mod controllers;
 
@@ -30,8 +38,24 @@ lazy_static! {
     };
 }
 
+pub struct AppEnv {
+    connection: MysqlConnection,
+}
+
+
+
+fn establish_connection() -> MysqlConnection {
+    dotenv().ok();
+
+    let database_url = env::var("DATABASE_URL")
+        .expect("DATABASE_URL must be set");
+    MysqlConnection::establish(&database_url)
+        .expect(&format!("Error connecting to {}", database_url))
+}
+
 fn main() {
-    server::new(|| App::new()
+    server::new(|| App
+            ::with_state(AppEnv { connection: establish_connection() })
             .middleware(SessionStorage::new(
                 CookieSessionBackend::signed(&[0; 32]).secure(false)
             ))
@@ -48,7 +72,7 @@ fn main() {
                 r.method(Method::POST).with(controllers::signin_action)
             })
             .resource("/signout", |r|{
-                r.method(Method::POST).f(controllers::signout_action)
+                r.method(Method::GET).f(controllers::signout_action)
             })
             .resource("/signup", |r| r.f(controllers::signup))
             .resource("", |r| r.f(controllers::index))

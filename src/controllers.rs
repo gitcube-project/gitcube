@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use actix_web::{Form, HttpRequest, HttpResponse};
+use actix_web::{State, Form, HttpRequest, HttpResponse};
 use actix_web::middleware::session::{RequestSession};
 
 use regex::Regex;
@@ -8,41 +8,44 @@ use regex::Regex;
 use tera::Context;
 
 use super::TERA;
+use super::AppEnv;
 
-pub fn index(_req: &HttpRequest) -> HttpResponse {
-    let contents = TERA.render("index.html", &json!({
-        "name": "John Doe"
-    })).unwrap();
+pub fn index(req: &HttpRequest<AppEnv>) -> HttpResponse {
+    let mut context = Context::new();
+    if let Some(email) = req.session().get::<String>("email").unwrap(){
+        context.insert("email", &email);
+    }
+    let contents = TERA.render("index.html", &context).unwrap();
     HttpResponse::Ok()
         .content_type("text/html")
         .body(&contents)
 }
 
-pub fn signin_page(_req: &HttpRequest) -> HttpResponse {
-    let contents = TERA.render("signin.html", &json!({})).unwrap();
+pub fn signin_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
+    let mut context = Context::new();
+    if let Some(email) = req.session().get::<String>("email").unwrap(){
+        context.insert("email", &email);
+    }
+    let contents = TERA.render("signin.html", &context).unwrap();
     HttpResponse::Ok().body(&contents)
 }
 
-pub fn signin_action((req, form): (HttpRequest, Form<HashMap<String, String>>)) -> HttpResponse {
+pub fn signin_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, String>>)) -> HttpResponse {
     if form.contains_key("email") && form.contains_key("password"){
         // check in db
 
         // if ok save in session
         req.session().set("email", form["email"].clone()).unwrap();
-
-        let mut context = Context::new();
-        context.insert("email", &form["email"]);
-        let contents = TERA.render("signin.html", &context).unwrap();
         
-        HttpResponse::Ok().body(&contents)
+        HttpResponse::TemporaryRedirect().header("Location", "/").finish()
     }else{
-        HttpResponse::Ok().body("error parameters")
+        HttpResponse::BadRequest().finish()
     }
     
 }
 
 
-pub fn signout_action(req: &HttpRequest) -> HttpResponse {
+pub fn signout_action(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let email:Option<String> = req.session().get("email").unwrap();
     if email.is_some(){
         req.session().remove("email");
@@ -55,16 +58,23 @@ pub fn signout_action(req: &HttpRequest) -> HttpResponse {
     }
 }
 
-pub fn signup(_req: &HttpRequest) -> HttpResponse {
-    let contents = TERA.render("signup.html", &json!({
-        "name": "John Doe"
-    })).unwrap();
+pub fn signup(req: &HttpRequest<AppEnv>) -> HttpResponse {
+    
+    let mut context = Context::new();
+    if let Some(email) = req.session().get::<String>("email").unwrap(){
+        context.insert("email", &email);
+    }
+    let contents = TERA.render("signup.html", &context).unwrap();
     HttpResponse::Ok()
         .content_type("text/html")
         .body(&contents)
 }
 
-pub fn profile(req: &HttpRequest) -> HttpResponse {
+pub fn profile(req: &HttpRequest<AppEnv>) -> HttpResponse {
+    let mut context = Context::new();
+    if let Some(email) = req.session().get::<String>("email").unwrap(){
+        context.insert("email", &email);
+    }
     let query = match req.uri().query(){
         None => "",
         Some(q) => q
@@ -89,9 +99,7 @@ pub fn profile(req: &HttpRequest) -> HttpResponse {
         }
     };
 
-    let contents = TERA.render(path, &json!({
-        "name": "John Doe"
-    })).unwrap();
+    let contents = TERA.render(path, &context).unwrap();
     
     HttpResponse::Ok()
         .content_type("text/html")
