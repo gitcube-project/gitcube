@@ -10,12 +10,6 @@ use tera::Context;
 use super::TERA;
 use super::AppEnv;
 
-use diesel::prelude::*;
-
-use super::models::{User, NewUser};
-use super::schema::users;
-use super::schema::users::dsl::*;
-
 
 pub fn index(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let mut context = Context::new();
@@ -80,12 +74,15 @@ pub fn signup_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
     if form.contains_key("name") && 
     form.contains_key("email") &&
     form.contains_key("password"){
-        let new_user = NewUser{user_name: form["name"].clone(),
-                            user_email: form["email"].clone(),
-                            user_password: form["password"].clone()};
-        diesel::insert_into(users::table)
-            .values(&new_user)
-            .execute(&state.connection).unwrap();
+        let mut stmt_insert = pool.prepare(r"INSERT INTO users
+                                       (user_name, user_email, user_password)
+                                        VALUES
+                                       (:user_name, :user_email, :user_password)").unwrap();
+        stmt.execute(params!{
+                "user_name" => &form["name"],
+                "user_email" => &form["email"],
+                "user_password" => &form["password"],
+            }).unwrap();
         HttpResponse::Found().header("Location", "/signin").finish()
     }else{
         HttpResponse::BadRequest().finish()

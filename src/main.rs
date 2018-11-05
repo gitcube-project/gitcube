@@ -19,17 +19,14 @@ extern crate serde_json;
 extern crate lazy_static;
 
 #[macro_use]
-extern crate diesel;
+extern crate mysql;
 extern crate dotenv;
 
-use diesel::prelude::*;
-use diesel::mysql::MysqlConnection;
+use mysql::Pool as Connection;
 use dotenv::dotenv;
 use std::env;
 
 pub mod controllers;
-pub mod models;
-pub mod schema;
 
 lazy_static! {
     pub static ref TERA: Tera = {
@@ -41,17 +38,17 @@ lazy_static! {
 }
 
 pub struct AppEnv {
-    connection: MysqlConnection,
+    connection: Connection,
 }
 
 
 
-fn establish_connection() -> MysqlConnection {
+fn establish_connection() -> Connection {
     dotenv().ok();
 
     let database_url = env::var("DATABASE_URL")
         .expect("DATABASE_URL must be set");
-    MysqlConnection::establish(&database_url)
+    Connection::new(&database_url)
         .expect(&format!("Error connecting to {}", database_url))
 }
 
