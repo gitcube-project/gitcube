@@ -59,3 +59,53 @@ pub fn find_user_by_name(connection:&Connection, user_name:&String)->Option<User
         }
     }
 }
+
+pub fn find_user_by_uuid(connection:&Connection, uuid:&String)->Option<User>{
+    match connection{
+        Connection::Mysql(conn)=>{
+            let mut stmt_insert = conn.prepare(r"SELECT (uuid, user_name, user_email, user_password)
+                                                FROM users
+                                                WHERE uuid=:uuid").unwrap();
+            let row = stmt_insert.execute(params!{
+                    "uuid" => uuid
+                }).unwrap().last();
+                
+            match row{
+                Some(v)=>{
+                    let user = v.unwrap();
+                    Some(User{
+                        uuid:user.get(0).unwrap(),
+                        user_name:user.get(1).unwrap(),
+                        user_email:user.get(2).unwrap(),
+                        user_password:user.get(3).unwrap(),
+                    })},
+                None=>None
+            }
+        }
+    }
+}
+
+pub fn find_user_by_email(connection:&Connection, email:&String)->Option<User>{
+    match connection{
+        Connection::Mysql(conn)=>{
+            let mut stmt_insert = conn.prepare(r"SELECT uuid, user_name, user_email, user_password
+                                                FROM users
+                                                WHERE user_email=:email").unwrap();
+            let row = stmt_insert.execute(params!{
+                    "email" => email
+                }).unwrap().last();
+                
+            match row{
+                Some(v)=>{
+                    let user = v.unwrap();
+                    Some(User{
+                        uuid:user.get(0).unwrap(),
+                        user_name:user.get(1).unwrap(),
+                        user_email:user.get(2).unwrap(),
+                        user_password:user.get(3).unwrap(),
+                    })},
+                None=>None
+            }
+        }
+    }
+}

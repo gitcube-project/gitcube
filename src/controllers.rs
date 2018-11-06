@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use actix_web::{Form, HttpRequest, HttpResponse};
-use actix_web::middleware::session::{RequestSession};
+use actix_web::middleware::session::{Session, RequestSession};
 
 use regex::Regex;
 
@@ -14,12 +14,24 @@ use super::AppEnv;
 
 use super::models::User;
 use super::models::insert_user;
+use super::models::find_user_by_email;
+
+fn session_to_context(session:&Session) -> Context{
+    let mut context = Context::new();
+
+    let properties = vec!["uuid",
+                        "user_name",
+                        "user_email"];
+    for each in properties{
+        if let Some(v) = session.get::<String>(each).unwrap(){
+            context.insert(each, &v);
+        }
+    }
+    context
+}
 
 pub fn index(req: &HttpRequest<AppEnv>) -> HttpResponse {
-    let mut context = Context::new();
-    if let Some(email) = req.session().get::<String>("email").unwrap(){
-        context.insert("email", &email);
-    }
+    let context = session_to_context(&req.session());
     let contents = TERA.render("index.html", &context).unwrap();
     HttpResponse::Ok()
         .content_type("text/html")
@@ -27,22 +39,33 @@ pub fn index(req: &HttpRequest<AppEnv>) -> HttpResponse {
 }
 
 pub fn signin_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
-    let mut context = Context::new();
-    if let Some(email) = req.session().get::<String>("email").unwrap(){
-        context.insert("email", &email);
-    }
+    let context = session_to_context(&req.session());
     let contents = TERA.render("signin.html", &context).unwrap();
     HttpResponse::Ok().body(&contents)
 }
 
 pub fn signin_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, String>>)) -> HttpResponse {
+    let state = req.state();
     if form.contains_key("email") && form.contains_key("password"){
         // check in db
+        let user = find_user_by_email(&state.connection, &form["email"]);
 
-        // if ok save in session
-        req.session().set("email", form["email"].clone()).unwrap();
-        
-        HttpResponse::Found().header("Location", "/").finish()
+        match user{
+            Some(v) => {
+                if v.user_password==form["password"]{
+                    // if ok save in session
+                    req.session().set("uuid", &v.uuid).unwrap();
+                    req.session().set("user_name", &v.user_name).unwrap();
+                    req.session().set("user_email", &v.user_email).unwrap();
+                    HttpResponse::Found().header("Location", "/").finish()
+                }else{
+                    HttpResponse::Found().header("Location", "/").finish()
+                }
+            },
+            None => {
+                HttpResponse::Found().header("Location", "/").finish()
+            }
+        }
     }else{
         HttpResponse::BadRequest().finish()
     }
@@ -52,10 +75,12 @@ pub fn signin_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
 pub fn signout_action(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let email:Option<String> = req.session().get("email").unwrap();
     if email.is_some(){
-        req.session().remove("email");
-        let context = Context::new();
+        req.session().remove("uuid");
+        req.session().remove("user_name");
+        req.session().remove("user_email");
+        req.session().clear();
+        let context = session_to_context(&req.session());
         let contents = TERA.render("signin.html", &context).unwrap();
-        req.session().set("context", context).unwrap();
         HttpResponse::Ok().body(&contents)
     }else{
         HttpResponse::Ok().body("error")
@@ -63,10 +88,7 @@ pub fn signout_action(req: &HttpRequest<AppEnv>) -> HttpResponse {
 }
 
 pub fn signup_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
-    let mut context = Context::new();
-    if let Some(email) = req.session().get::<String>("email").unwrap(){
-        context.insert("email", &email);
-    }
+    let context = session_to_context(&req.session());
     let contents = TERA.render("signup.html", &context).unwrap();
     HttpResponse::Ok()
         .content_type("text/html")
@@ -92,10 +114,7 @@ pub fn signup_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
 
 
 pub fn profile(req: &HttpRequest<AppEnv>) -> HttpResponse {
-    let mut context = Context::new();
-    if let Some(email) = req.session().get::<String>("email").unwrap(){
-        context.insert("email", &email);
-    }
+    let context = session_to_context(&req.session());
     let query = match req.uri().query(){
         None => "",
         Some(q) => q
