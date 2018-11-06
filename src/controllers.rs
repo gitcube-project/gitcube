@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use actix_web::{State, Form, HttpRequest, HttpResponse};
+use actix_web::{Form, HttpRequest, HttpResponse};
 use actix_web::middleware::session::{RequestSession};
 
 use regex::Regex;
@@ -74,15 +74,7 @@ pub fn signup_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
     if form.contains_key("name") && 
     form.contains_key("email") &&
     form.contains_key("password"){
-        let mut stmt_insert = state.connection.prepare(r"INSERT INTO users
-                                       (user_name, user_email, user_password)
-                                        VALUES
-                                       (:user_name, :user_email, :user_password)").unwrap();
-        stmt_insert.execute(params!{
-                "user_name" => &form["name"],
-                "user_email" => &form["email"],
-                "user_password" => &form["password"],
-            }).unwrap();
+        super::models::insert_user(&state.connection, &form["name"], &form["email"], &form["password"]);
         HttpResponse::Found().header("Location", "/signin").finish()
     }else{
         HttpResponse::BadRequest().finish()

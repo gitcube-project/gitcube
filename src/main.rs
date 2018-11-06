@@ -22,11 +22,13 @@ extern crate lazy_static;
 extern crate mysql;
 extern crate dotenv;
 
-use mysql::Pool as Connection;
 use dotenv::dotenv;
 use std::env;
 
 pub mod controllers;
+pub mod models;
+
+use models::Connection;
 
 lazy_static! {
     pub static ref TERA: Tera = {
@@ -48,8 +50,7 @@ fn establish_connection() -> Connection {
 
     let database_url = env::var("DATABASE_URL")
         .expect("DATABASE_URL must be set");
-    Connection::new(&database_url)
-        .expect(&format!("Error connecting to {}", database_url))
+    Connection::new_mysql(&database_url)
 }
 
 fn main() {
