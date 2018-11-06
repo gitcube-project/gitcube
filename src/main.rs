@@ -1,4 +1,4 @@
-
+extern crate uuid;
 
 extern crate actix_web;
 use actix_web::{App, http::Method, fs, server};

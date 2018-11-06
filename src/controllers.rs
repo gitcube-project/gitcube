@@ -7,9 +7,13 @@ use regex::Regex;
 
 use tera::Context;
 
+use uuid::Uuid;
+
 use super::TERA;
 use super::AppEnv;
 
+use super::models::User;
+use super::models::insert_user;
 
 pub fn index(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let mut context = Context::new();
@@ -74,7 +78,12 @@ pub fn signup_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
     if form.contains_key("name") && 
     form.contains_key("email") &&
     form.contains_key("password"){
-        super::models::insert_user(&state.connection, &form["name"], &form["email"], &form["password"]);
+        insert_user(&state.connection, &User{
+            uuid:Uuid::new_v4().to_hyphenated().to_string(),
+            user_name:form["name"].clone(), 
+            user_email:form["email"].clone(), 
+            user_password:form["password"].clone()
+        });
         HttpResponse::Found().header("Location", "/signin").finish()
     }else{
         HttpResponse::BadRequest().finish()
