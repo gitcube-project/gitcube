@@ -74,11 +74,11 @@ pub fn signup_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
     if form.contains_key("name") && 
     form.contains_key("email") &&
     form.contains_key("password"){
-        let mut stmt_insert = pool.prepare(r"INSERT INTO users
+        let mut stmt_insert = state.connection.prepare(r"INSERT INTO users
                                        (user_name, user_email, user_password)
                                         VALUES
                                        (:user_name, :user_email, :user_password)").unwrap();
-        stmt.execute(params!{
+        stmt_insert.execute(params!{
                 "user_name" => &form["name"],
                 "user_email" => &form["email"],
                 "user_password" => &form["password"],
