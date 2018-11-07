@@ -33,7 +33,7 @@ use models::Connection;
 
 lazy_static! {
     pub static ref TERA: Tera = {
-        let mut tera = compile_templates!("public/templates/**/*");
+        let mut tera = compile_templates!("templates/**/*");
         // and we can add more things to our instance if we want to
         tera.autoescape_on(vec!["html"]);
         tera
@@ -60,14 +60,8 @@ fn main() {
             .middleware(SessionStorage::new(
                 CookieSessionBackend::signed(&[0; 32]).secure(false)
             ))
-            .handler("/logo",
-            fs::StaticFiles::new("public/logo").unwrap().show_files_listing())
-            .handler("/assets",
-            fs::StaticFiles::new("public/assets").unwrap().show_files_listing())
-            .handler("/js",
-            fs::StaticFiles::new("public/assets").unwrap().show_files_listing())
-            .handler("/css",
-            fs::StaticFiles::new("public/assets").unwrap().show_files_listing())
+            .handler("/logo", fs::StaticFiles::new("public/logo").unwrap().show_files_listing())
+            .handler("/assets", fs::StaticFiles::new("public/assets").unwrap().show_files_listing())
             .resource("/signin", |r|{
                 r.method(Method::GET).f(controllers::user::signin_page);
                 r.method(Method::POST).with(controllers::user::signin_action)
