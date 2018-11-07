@@ -80,7 +80,7 @@ fn main() {
             })
             .resource("", |r| r.f(controllers::index))
             .resource("/", |r| r.f(controllers::index))
-            .resource("/{name:[0-9a-zA-Z]+}", |r| r.f(controllers::profile))
+            .resource("/{name:[0-9a-zA-Z]+}", |r| r.method(Method::GET).with(controllers::profile))
     )
     .bind("127.0.0.1:8088")
     .unwrap()

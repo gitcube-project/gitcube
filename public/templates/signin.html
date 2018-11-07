@@ -90,6 +90,26 @@
 
         </form>
 
+        {% if error_header %}
+        <div class="ui negative message">
+            <div class="header">
+              {{ error_header }}
+            </div>
+            <p>{{ error_content }}
+          </p>
+        </div>
+        {% endif %}
+
+        {% if message_header %}
+        <div class="ui success message">
+            <div class="header">
+              {{ message_header }}
+            </div>
+            <p>{{ message_content }}
+          </p>
+        </div>
+        {% endif %}
+
         <div class="ui message">
             New to us? <a href="#">Sign Up</a>
         </div>

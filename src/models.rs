@@ -38,7 +38,7 @@ pub fn insert_user(connection:&Connection, user:&User){
 pub fn find_user_by_name(connection:&Connection, user_name:&String)->Option<User>{
     match connection{
         Connection::Mysql(conn)=>{
-            let mut stmt_insert = conn.prepare(r"SELECT (uuid, user_name, user_email, user_password)
+            let mut stmt_insert = conn.prepare(r"SELECT uuid, user_name, user_email, user_password
                                                 FROM users
                                                 WHERE user_name=:user_name").unwrap();
             let row = stmt_insert.execute(params!{

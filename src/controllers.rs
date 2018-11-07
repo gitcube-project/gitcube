@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use actix_web::{Form, HttpRequest, HttpResponse};
+use actix_web::{Path, Query, Form, HttpRequest, HttpResponse};
 use actix_web::middleware::session::{Session, RequestSession};
 
 use regex::Regex;
@@ -15,6 +15,7 @@ use super::AppEnv;
 use super::models::User;
 use super::models::insert_user;
 use super::models::find_user_by_email;
+use super::models::find_user_by_name;
 
 fn session_to_context(session:&Session) -> Context{
     let mut context = Context::new();
@@ -47,6 +48,7 @@ pub fn signin_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
 pub fn signin_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, String>>)) -> HttpResponse {
     let state = req.state();
     if form.contains_key("email") && form.contains_key("password"){
+        let mut context = session_to_context(&req.session());
         // check in db
         let user = find_user_by_email(&state.connection, &form["email"]);
 
@@ -57,13 +59,20 @@ pub fn signin_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
                     req.session().set("uuid", &v.uuid).unwrap();
                     req.session().set("user_name", &v.user_name).unwrap();
                     req.session().set("user_email", &v.user_email).unwrap();
+                    
                     HttpResponse::Found().header("Location", "/").finish()
                 }else{
-                    HttpResponse::Found().header("Location", "/").finish()
+                    context.insert("error_header", "Sign in error.");
+                    context.insert("error_content", "Incorrect username or password.");
+                    let contents = TERA.render("signin.html", &context).unwrap();
+                    HttpResponse::Ok().body(&contents)
                 }
             },
             None => {
-                HttpResponse::Found().header("Location", "/").finish()
+                context.insert("error_header", "Sign in error.");
+                context.insert("error_content", "Incorrect username or password.");
+                let contents = TERA.render("signin.html", &context).unwrap();
+                HttpResponse::Ok().body(&contents)
             }
         }
     }else{
@@ -73,8 +82,8 @@ pub fn signin_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
 
 
 pub fn signout_action(req: &HttpRequest<AppEnv>) -> HttpResponse {
-    let email:Option<String> = req.session().get("email").unwrap();
-    if email.is_some(){
+    let uuid:Option<String> = req.session().get("uuid").unwrap();
+    if uuid.is_some(){
         req.session().remove("uuid");
         req.session().remove("user_name");
         req.session().remove("user_email");
@@ -106,32 +115,41 @@ pub fn signup_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
             user_email:form["email"].clone(), 
             user_password:form["password"].clone()
         });
-        HttpResponse::Found().header("Location", "/signin").finish()
+        let mut context = session_to_context(&req.session());
+        context.insert("message_header", "Your user registration was successful.");
+        context.insert("message_content", "You may now log-in with the username you have chosen");
+        let contents = TERA.render("signin.html", &context).unwrap();
+        HttpResponse::Ok().body(&contents)
     }else{
         HttpResponse::BadRequest().finish()
     }
 }
 
 
-pub fn profile(req: &HttpRequest<AppEnv>) -> HttpResponse {
-    let context = session_to_context(&req.session());
-    let query = match req.uri().query(){
-        None => "",
-        Some(q) => q
-    };
-    let re = Regex::new(r"(?:(?:&|^)tab=(?P<tab>[a-zA-Z]+)(?:&|$))").unwrap();
-    let path = match re.captures(query){
+pub fn profile((req, path, query):(HttpRequest<AppEnv>, Path<(String,)>, Query<HashMap<String, String>>)) -> HttpResponse {
+    let state = req.state();
+    let mut context = session_to_context(&req.session());
+    let user_name = &path.0;
+    let cur_user = find_user_by_name(&state.connection, user_name);
+
+    if cur_user.is_none(){
+        return HttpResponse::Ok().body("user no find");
+    }
+
+    context.insert("cur_user_name", &cur_user.unwrap().user_name);
+
+    let path = match query.get("tab"){
         None => "overview.html",
         Some(caps) => {
-            if &caps["tab"]=="overview" {
+            if caps == "overview" {
                 "overview.html"
-            }else if &caps["tab"]=="repositories" {
+            }else if caps == "repositories" {
                 "repositories.html"
-            }else if &caps["tab"]=="stars" {
+            }else if caps == "stars" {
                 "stars.html"
-            }else if &caps["tab"]=="followers" {
+            }else if caps == "followers" {
                 "followers.html"
-            }else if &caps["tab"]=="followering" {
+            }else if caps == "followering" {
                 "followering.html"
             }else{
                 "overview.html"
