@@ -79,9 +79,14 @@ fn main() {
                 r.method(Method::GET).f(controllers::signup_page);
                 r.method(Method::POST).with(controllers::signup_action)
             })
+            .resource("/new", |r|{
+                r.method(Method::GET).f(controllers::new_repository_page);
+                r.method(Method::POST).with(controllers::new_repository_action)
+            })
             .resource("", |r| r.f(controllers::index))
             .resource("/", |r| r.f(controllers::index))
             .resource("/{name:[0-9a-zA-Z]+}", |r| r.method(Method::GET).with(controllers::profile))
+            .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}", |r| r.method(Method::GET).f(controllers::repo_page))
     )
     .bind("127.0.0.1:8088")
     .unwrap()

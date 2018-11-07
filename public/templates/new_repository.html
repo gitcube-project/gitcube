@@ -1,0 +1,58 @@
+{% extends "layouts/main_layout.html" %}
+{% block title %}
+profile - GitCube
+{% endblock title %}
+{% block content %}
+<div class="repository new repo">
+	<div class="ui middle very relaxed page grid">
+		<div class="column">
+			<form class="ui form" action="/new" method="post">
+				<h3 class="ui top attached header">
+					New Repository
+				</h3>
+				<div class="ui attached segment">
+                <div class="two fields">
+					<div class="required field ">
+						<label>Owner</label>
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="owner">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Owner</div>
+                            <div class="menu">
+                            {% for owner in available_owners %}
+                                <div class="item" data-value="{{loop.index}}">{{owner}}</div>
+                            {% endfor %}
+                            </div>
+                        </div>
+					</div>
+
+					<div class="required field ">
+						<label for="repo_name">Repository Name</label>
+						<input id="repo_name" name="repo_name" value="" autofocus="" required="">
+					</div>
+
+                    </div>
+                    <div class="field">
+                        <label>Visibility</label>
+                        <div class="ui checkbox">
+                        <input name="private" type="checkbox" tabindex="0" class="hidden">
+                       <label>This repository is <span class="ui red text">Private</span></label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Description</label>
+                        <textarea rows="3"></textarea>
+                        <span class="ui grey">Description of repository. Maximum 512 characters length.</span>
+                    </div>
+					<div class="inline field">
+						<label></label>
+						<button class="ui teal button">
+							Create Repository
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock content %}

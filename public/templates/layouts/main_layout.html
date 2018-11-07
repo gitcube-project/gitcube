@@ -134,6 +134,8 @@
                 // init dropdown
                 $('.ui.dropdown')
                     .dropdown();
+                $('.ui.checkbox')
+                    .checkbox();
             });
     </script>
 
@@ -166,8 +168,8 @@
                     <i class="dropdown icon"></i>
                     <div class="menu">
                         <div class="header">Create new</div>
-                        <div class="item">New repository</div>
-                        <div class="item">New organization</div>
+                        <a class="item" href="/new">New repository</a>
+                        <a class="item" href="/organization/new">New organization</a>
                     </div>
                 </div>
                 <div class="ui top right pointing dropdown item">

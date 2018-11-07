@@ -138,8 +138,6 @@ pub fn profile((req, path, query):(HttpRequest<AppEnv>, Path<(String,)>, Query<H
         return HttpResponse::Ok().body("user no find");
     }
 
-    
-
     let path = match query.get("tab"){
         None => "overview.html",
         Some(caps) => {
@@ -164,4 +162,57 @@ pub fn profile((req, path, query):(HttpRequest<AppEnv>, Path<(String,)>, Query<H
     HttpResponse::Ok()
         .content_type("text/html")
         .body(&contents)
+}
+
+pub fn new_repository_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
+    let mut context = session_to_context(&req.session());
+    let mut available_owners = Vec::new();
+    if let Some(v) = req.session().get::<String>("user_fullname").unwrap(){
+        available_owners.push(v);
+    }
+    context.insert("available_owners", &available_owners);
+    let contents = TERA.render("new_repository.html", &context).unwrap();
+    HttpResponse::Ok().body(&contents)
+}
+
+pub fn new_repository_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, String>>)) -> HttpResponse {
+    let state = req.state();
+    if form.contains_key("email") && form.contains_key("password"){
+        let mut context = session_to_context(&req.session());
+        // check in db
+        let user = find_user_by_email(&state.connection, &form["email"]);
+
+        match user{
+            Some(v) => {
+                if v.user_password==form["password"]{
+                    // if ok save in session
+                    req.session().set("uuid", &v.uuid).unwrap();
+                    req.session().set("user_name", &v.user_name).unwrap();
+                    req.session().set("user_fullname", &v.user_fullname).unwrap();
+                    req.session().set("user_email", &v.user_email).unwrap();
+                    
+                    HttpResponse::Found().header("Location", "/").finish()
+                }else{
+                    context.insert("error_header", "Sign in error.");
+                    context.insert("error_content", "Incorrect username or password.");
+                    let contents = TERA.render("signin.html", &context).unwrap();
+                    HttpResponse::Ok().body(&contents)
+                }
+            },
+            None => {
+                context.insert("error_header", "Sign in error.");
+                context.insert("error_content", "Incorrect username or password.");
+                let contents = TERA.render("signin.html", &context).unwrap();
+                HttpResponse::Ok().body(&contents)
+            }
+        }
+    }else{
+        HttpResponse::BadRequest().finish()
+    }
+}
+
+pub fn repo_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
+    let mut context = session_to_context(&req.session());
+    let contents = TERA.render("repository.html", &context).unwrap();
+    HttpResponse::Ok().body(&contents)
 }
