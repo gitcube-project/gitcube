@@ -9,10 +9,10 @@ use super::super::TERA;
 use super::super::AppEnv;
 use super::session_to_context;
 
-use ::models::User;
-use ::models::insert_user;
-use ::models::find_user_by_email;
-use ::models::find_user_by_fullname;
+use ::models::user::User;
+use ::models::user::insert_user;
+use ::models::user::find_user_by_email;
+use ::models::user::find_user_by_fullname;
 
 
 pub fn signin_page(req: &HttpRequest<AppEnv>) -> HttpResponse {

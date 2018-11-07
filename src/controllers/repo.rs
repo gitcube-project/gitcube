@@ -9,13 +9,8 @@ use ::TERA;
 use ::AppEnv;
 use super::session_to_context;
 
-
-use ::models::User;
-use ::models::Repo;
-use ::models::insert_user;
-use ::models::insert_repo;
-use ::models::find_user_by_email;
-use ::models::find_user_by_fullname;
+use ::models::repo::Repo;
+use ::models::repo::insert_repo;
 
 pub fn new_repository_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let mut context = session_to_context(&req.session());
