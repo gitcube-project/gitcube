@@ -1,7 +1,7 @@
 {% extends "layouts/main_layout.html" %}
 
 {% block title %}
-home - GitCube
+profile - GitCube
 {% endblock title %}
 
 {% block content %}
@@ -13,8 +13,9 @@ home - GitCube
             </a>
             <h2 class="ui header">
                 {{ cur_user_name }}
-                <div class="sub header">jstzwj</div>
+                <div class="sub header">{{ cur_user_fullname }}</div>
             </h2>
+            <!--
             <h5 class="ui disabled header">
                 Learning learning
             </h5>
@@ -27,6 +28,7 @@ home - GitCube
                     <i class="location arrow icon"></i> SuZhou,China
                 </div>
             </div>
+            -->
             <div class="ui divider"></div>
             <h4 class="ui header">
                 Organizations

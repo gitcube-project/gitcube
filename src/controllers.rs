@@ -15,13 +15,14 @@ use super::AppEnv;
 use super::models::User;
 use super::models::insert_user;
 use super::models::find_user_by_email;
-use super::models::find_user_by_name;
+use super::models::find_user_by_fullname;
 
 fn session_to_context(session:&Session) -> Context{
     let mut context = Context::new();
 
     let properties = vec!["uuid",
                         "user_name",
+                        "user_fullname",
                         "user_email"];
     for each in properties{
         if let Some(v) = session.get::<String>(each).unwrap(){
@@ -58,6 +59,7 @@ pub fn signin_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
                     // if ok save in session
                     req.session().set("uuid", &v.uuid).unwrap();
                     req.session().set("user_name", &v.user_name).unwrap();
+                    req.session().set("user_fullname", &v.user_fullname).unwrap();
                     req.session().set("user_email", &v.user_email).unwrap();
                     
                     HttpResponse::Found().header("Location", "/").finish()
@@ -84,9 +86,6 @@ pub fn signin_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
 pub fn signout_action(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let uuid:Option<String> = req.session().get("uuid").unwrap();
     if uuid.is_some(){
-        req.session().remove("uuid");
-        req.session().remove("user_name");
-        req.session().remove("user_email");
         req.session().clear();
         let context = session_to_context(&req.session());
         let contents = TERA.render("signin.html", &context).unwrap();
@@ -112,6 +111,7 @@ pub fn signup_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
         insert_user(&state.connection, &User{
             uuid:Uuid::new_v4().to_hyphenated().to_string(),
             user_name:form["name"].clone(), 
+            user_fullname:form["name"].clone(), 
             user_email:form["email"].clone(), 
             user_password:form["password"].clone()
         });
@@ -129,14 +129,16 @@ pub fn signup_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
 pub fn profile((req, path, query):(HttpRequest<AppEnv>, Path<(String,)>, Query<HashMap<String, String>>)) -> HttpResponse {
     let state = req.state();
     let mut context = session_to_context(&req.session());
-    let user_name = &path.0;
-    let cur_user = find_user_by_name(&state.connection, user_name);
+    let user_fullname = &path.0;
 
-    if cur_user.is_none(){
+    if let Some(cur_user) = find_user_by_fullname(&state.connection, user_fullname){
+        context.insert("cur_user_name", &cur_user.user_name);
+        context.insert("cur_user_fullname", &cur_user.user_fullname);
+    }else{
         return HttpResponse::Ok().body("user no find");
     }
 
-    context.insert("cur_user_name", &cur_user.unwrap().user_name);
+    
 
     let path = match query.get("tab"){
         None => "overview.html",
@@ -149,8 +151,8 @@ pub fn profile((req, path, query):(HttpRequest<AppEnv>, Path<(String,)>, Query<H
                 "stars.html"
             }else if caps == "followers" {
                 "followers.html"
-            }else if caps == "followering" {
-                "followering.html"
+            }else if caps == "following" {
+                "following.html"
             }else{
                 "overview.html"
             }

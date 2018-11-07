@@ -3,13 +3,14 @@
 
 {% block overview %}
 <div class="ui top attached tabular menu">
-    <a class="active item" href="#">Overview</a>
-    <a class="item" href="#">Repositories</a>
-    <a class="item" href="#">Stars</a>
-    <a class="item" href="#">Followers</a>
-    <a class="item" href="#">Following</a>
+    <a class="active item" href="/{{user_fullname}}">Overview</a>
+    <a class="item" href="/{{user_fullname}}?tab=repositories">Repositories</a>
+    <a class="item" href="/{{user_fullname}}?tab=stars">Stars</a>
+    <a class="item" href="/{{user_fullname}}?tab=followers">Followers</a>
+    <a class="item" href="/{{user_fullname}}?tab=following">Following</a>
 </div>
 <div class="ui bottom attached active tab segment" style="min-width: 830px;">
+    <!--
     <div class="ui two column grid">
         <div class="row">
             <div class="column">
@@ -66,6 +67,7 @@
             <div class="column"></div>
         </div>
     </div>
+    -->
     <div class="ui two column divided grid">
         <div id="cal-heatmap" class="twelve wide column" style="min-width: 660px;"></div>
         <div class="two wide column">

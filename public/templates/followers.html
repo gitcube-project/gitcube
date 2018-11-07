@@ -3,11 +3,11 @@
 
 {% block overview %}
 <div class="ui top attached tabular menu">
-    <a class="item" href="#">Overview</a>
-    <a class="active item" href="#">Repositories</a>
-    <a class="item" href="#">Stars</a>
-    <a class="item" href="#">Followers</a>
-    <a class="item" href="#">Following</a>
+    <a class="item" href="/{{user_fullname}}">Overview</a>
+    <a class="item" href="/{{user_fullname}}?tab=repositories">Repositories</a>
+    <a class="item" href="/{{user_fullname}}?tab=stars">Stars</a>
+    <a class="active item" href="/{{user_fullname}}?tab=followers">Followers</a>
+    <a class="item" href="/{{user_fullname}}?tab=following">Following</a>
 </div>
 <div class="ui bottom attached active tab segment">
     

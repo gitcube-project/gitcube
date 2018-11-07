@@ -14,20 +14,30 @@ impl Connection{
 pub struct User{
     pub uuid:String,
     pub user_name:String,
+    pub user_fullname:String,
     pub user_email:String,
     pub user_password:String,
+}
+
+pub struct Repo{
+    pub uuid:String,
+    pub repo_name:String,
+    pub repo_description:String,
+    pub repo_owner_uuid:String,
+    pub repo_create_time:String,
 }
 
 pub fn insert_user(connection:&Connection, user:&User){
     match connection{
         Connection::Mysql(conn)=>{
             let mut stmt_insert = conn.prepare(r"INSERT INTO users
-                                       (uuid, user_name, user_email, user_password)
+                                       (uuid, user_name, user_fullname, user_email, user_password)
                                         VALUES
-                                       (:uuid, :user_name, :user_email, :user_password)").unwrap();
+                                       (:uuid, :user_name, :user_fullname, :user_email, :user_password)").unwrap();
             stmt_insert.execute(params!{
                     "uuid" => &user.uuid,
                     "user_name" => &user.user_name,
+                    "user_fullname" => &user.user_fullname,
                     "user_email" => &user.user_email,
                     "user_password" => &user.user_password,
                 }).unwrap();
@@ -35,14 +45,14 @@ pub fn insert_user(connection:&Connection, user:&User){
     }
 }
 
-pub fn find_user_by_name(connection:&Connection, user_name:&String)->Option<User>{
+pub fn find_user_by_fullname(connection:&Connection, user_fullname:&String)->Option<User>{
     match connection{
         Connection::Mysql(conn)=>{
-            let mut stmt_insert = conn.prepare(r"SELECT uuid, user_name, user_email, user_password
+            let mut stmt_insert = conn.prepare(r"SELECT uuid, user_name, user_fullname, user_email, user_password
                                                 FROM users
-                                                WHERE user_name=:user_name").unwrap();
+                                                WHERE user_fullname=:user_fullname").unwrap();
             let row = stmt_insert.execute(params!{
-                    "user_name" => user_name
+                    "user_fullname" => user_fullname
                 }).unwrap().last();
                 
             match row{
@@ -51,8 +61,9 @@ pub fn find_user_by_name(connection:&Connection, user_name:&String)->Option<User
                     Some(User{
                         uuid:user.get(0).unwrap(),
                         user_name:user.get(1).unwrap(),
-                        user_email:user.get(2).unwrap(),
-                        user_password:user.get(3).unwrap(),
+                        user_fullname:user.get(2).unwrap(),
+                        user_email:user.get(3).unwrap(),
+                        user_password:user.get(4).unwrap(),
                     })},
                 None=>None
             }
@@ -63,7 +74,7 @@ pub fn find_user_by_name(connection:&Connection, user_name:&String)->Option<User
 pub fn find_user_by_uuid(connection:&Connection, uuid:&String)->Option<User>{
     match connection{
         Connection::Mysql(conn)=>{
-            let mut stmt_insert = conn.prepare(r"SELECT (uuid, user_name, user_email, user_password)
+            let mut stmt_insert = conn.prepare(r"SELECT (uuid, user_name, user_fullname, user_email, user_password)
                                                 FROM users
                                                 WHERE uuid=:uuid").unwrap();
             let row = stmt_insert.execute(params!{
@@ -76,8 +87,9 @@ pub fn find_user_by_uuid(connection:&Connection, uuid:&String)->Option<User>{
                     Some(User{
                         uuid:user.get(0).unwrap(),
                         user_name:user.get(1).unwrap(),
-                        user_email:user.get(2).unwrap(),
-                        user_password:user.get(3).unwrap(),
+                        user_fullname:user.get(2).unwrap(),
+                        user_email:user.get(3).unwrap(),
+                        user_password:user.get(4).unwrap(),
                     })},
                 None=>None
             }
@@ -88,7 +100,7 @@ pub fn find_user_by_uuid(connection:&Connection, uuid:&String)->Option<User>{
 pub fn find_user_by_email(connection:&Connection, email:&String)->Option<User>{
     match connection{
         Connection::Mysql(conn)=>{
-            let mut stmt_insert = conn.prepare(r"SELECT uuid, user_name, user_email, user_password
+            let mut stmt_insert = conn.prepare(r"SELECT uuid, user_name, user_fullname, user_email, user_password
                                                 FROM users
                                                 WHERE user_email=:email").unwrap();
             let row = stmt_insert.execute(params!{
@@ -101,8 +113,9 @@ pub fn find_user_by_email(connection:&Connection, email:&String)->Option<User>{
                     Some(User{
                         uuid:user.get(0).unwrap(),
                         user_name:user.get(1).unwrap(),
-                        user_email:user.get(2).unwrap(),
-                        user_password:user.get(3).unwrap(),
+                        user_fullname:user.get(2).unwrap(),
+                        user_email:user.get(3).unwrap(),
+                        user_password:user.get(4).unwrap(),
                     })},
                 None=>None
             }

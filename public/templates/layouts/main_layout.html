@@ -161,14 +161,23 @@
             </div>
             {% else %}
             <div class="ui horizontal right item">
-                <div class="ui pointing dropdown item">
+                <div class="ui icon top left pointing dropdown item">
+                    <i class="plus icon"></i>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <div class="header">Create new</div>
+                        <div class="item">New repository</div>
+                        <div class="item">New organization</div>
+                    </div>
+                </div>
+                <div class="ui top right pointing dropdown item">
                     <img class="ui avatar image" src="https://avatars0.githubusercontent.com/u/13167278?s=460&v=4">
                     <i class="dropdown icon"></i>
                     <div class="menu">
                         <div class="header">Signed in as {{user_name}}</div>
-                        <a class="item" href="/{{user_name}}">Profile</a>
-                        <a class="item" href="/{{user_name}}?tab=repositories">Repositories</a>
-                        <a class="item" href="/{{user_name}}?tab=stars">Stars</a>
+                        <a class="item" href="/{{user_fullname}}">Profile</a>
+                        <a class="item" href="/{{user_fullname}}?tab=repositories">Repositories</a>
+                        <a class="item" href="/{{user_fullname}}?tab=stars">Stars</a>
                         <div class="divider"></div>
                         <a class="item" href="/help">Help</a>
                         <a class="item" href="/settings">Settings</a>
