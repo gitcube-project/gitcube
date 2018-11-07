@@ -13,7 +13,9 @@ use super::TERA;
 use super::AppEnv;
 
 use super::models::User;
+use super::models::Repo;
 use super::models::insert_user;
+use super::models::insert_repo;
 use super::models::find_user_by_email;
 use super::models::find_user_by_fullname;
 
@@ -177,42 +179,31 @@ pub fn new_repository_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
 
 pub fn new_repository_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, String>>)) -> HttpResponse {
     let state = req.state();
-    if form.contains_key("email") && form.contains_key("password"){
-        let mut context = session_to_context(&req.session());
-        // check in db
-        let user = find_user_by_email(&state.connection, &form["email"]);
+    if form.contains_key("owner")
+        && form.contains_key("repo_name")
+        && form.contains_key("private")
+        && form.contains_key("description"){
+        let uuid = req.session().get::<String>("uuid").unwrap().unwrap();
+        let user_fullname = req.session().get::<String>("user_fullname").unwrap().unwrap();
+        let context = session_to_context(&req.session());
+        // insert to db
+        insert_repo(&state.connection, &Repo{
+            uuid:Uuid::new_v4().to_hyphenated().to_string(),
+            repo_name:form["repo_name"].clone(), 
+            repo_description:form["description"].clone(), 
+            repo_owner_uuid:uuid.clone(), 
+            repo_create_time:chrono::Utc::now().format("%Y-%m-%d %H:%M:%S").to_string()
+        });
+        // run git cmd
 
-        match user{
-            Some(v) => {
-                if v.user_password==form["password"]{
-                    // if ok save in session
-                    req.session().set("uuid", &v.uuid).unwrap();
-                    req.session().set("user_name", &v.user_name).unwrap();
-                    req.session().set("user_fullname", &v.user_fullname).unwrap();
-                    req.session().set("user_email", &v.user_email).unwrap();
-                    
-                    HttpResponse::Found().header("Location", "/").finish()
-                }else{
-                    context.insert("error_header", "Sign in error.");
-                    context.insert("error_content", "Incorrect username or password.");
-                    let contents = TERA.render("signin.html", &context).unwrap();
-                    HttpResponse::Ok().body(&contents)
-                }
-            },
-            None => {
-                context.insert("error_header", "Sign in error.");
-                context.insert("error_content", "Incorrect username or password.");
-                let contents = TERA.render("signin.html", &context).unwrap();
-                HttpResponse::Ok().body(&contents)
-            }
-        }
+        HttpResponse::Found().header("Location", format!("/{}/{}",&user_fullname, &form["repo_name"])).finish()
     }else{
         HttpResponse::BadRequest().finish()
     }
 }
 
 pub fn repo_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
-    let mut context = session_to_context(&req.session());
+    let context = session_to_context(&req.session());
     let contents = TERA.render("repository.html", &context).unwrap();
     HttpResponse::Ok().body(&contents)
 }

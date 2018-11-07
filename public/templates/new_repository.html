@@ -20,7 +20,7 @@ profile - GitCube
                             <div class="default text">Owner</div>
                             <div class="menu">
                             {% for owner in available_owners %}
-                                <div class="item" data-value="{{loop.index}}">{{owner}}</div>
+                                <div class="item" data-value="{{owner}}">{{owner}}</div>
                             {% endfor %}
                             </div>
                         </div>
@@ -41,7 +41,7 @@ profile - GitCube
                     </div>
                     <div class="field">
                         <label>Description</label>
-                        <textarea rows="3"></textarea>
+                        <textarea rows="3" name="description"></textarea>
                         <span class="ui grey">Description of repository. Maximum 512 characters length.</span>
                     </div>
 					<div class="inline field">
