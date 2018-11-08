@@ -38,10 +38,10 @@ pub fn new_repository_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<Str
         let repo_uuid = Uuid::new_v4().to_hyphenated().to_string();
         insert_repo(&state.connection, &Repo{
             uuid:repo_uuid.clone(),
-            repo_name:form["repo_name"].clone(), 
-            repo_description:form["description"].clone(), 
-            repo_owner_uuid:uuid.clone(), 
-            repo_create_time:chrono::Utc::now().format("%Y-%m-%d %H:%M:%S").to_string()
+            name:form["repo_name"].clone(), 
+            description:form["description"].clone(), 
+            owner_uuid:uuid.clone(), 
+            create_time:chrono::Utc::now().format("%Y-%m-%d %H:%M:%S").to_string()
         });
         // run git cmd
         git_init(&format!("{git}/{uuid}",

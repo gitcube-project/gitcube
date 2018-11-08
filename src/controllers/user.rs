@@ -31,12 +31,12 @@ pub fn signin_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
 
         match user{
             Some(v) => {
-                if v.user_password==form["password"]{
+                if v.password==form["password"]{
                     // if ok save in session
                     req.session().set("uuid", &v.uuid).unwrap();
-                    req.session().set("user_name", &v.user_name).unwrap();
-                    req.session().set("user_fullname", &v.user_fullname).unwrap();
-                    req.session().set("user_email", &v.user_email).unwrap();
+                    req.session().set("user_name", &v.name).unwrap();
+                    req.session().set("user_fullname", &v.fullname).unwrap();
+                    req.session().set("user_email", &v.email).unwrap();
                     
                     HttpResponse::Found().header("Location", "/").finish()
                 }else{
@@ -86,10 +86,10 @@ pub fn signup_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
     form.contains_key("password"){
         insert_user(&state.connection, &User{
             uuid:Uuid::new_v4().to_hyphenated().to_string(),
-            user_name:form["name"].clone(), 
-            user_fullname:form["name"].clone(), 
-            user_email:form["email"].clone(), 
-            user_password:form["password"].clone()
+            name:form["name"].clone(), 
+            fullname:form["name"].clone(), 
+            email:form["email"].clone(), 
+            password:form["password"].clone()
         });
         let mut context = session_to_context(&req.session());
         context.insert("message_header", "Your user registration was successful.");
@@ -108,8 +108,8 @@ pub fn profile((req, path, query):(HttpRequest<AppEnv>, Path<(String,)>, Query<H
     let user_fullname = &path.0;
 
     if let Some(cur_user) = find_user_by_fullname(&state.connection, user_fullname){
-        context.insert("cur_user_name", &cur_user.user_name);
-        context.insert("cur_user_fullname", &cur_user.user_fullname);
+        context.insert("cur_user_name", &cur_user.name);
+        context.insert("cur_user_fullname", &cur_user.fullname);
 
         let path = match query.get("tab"){
             None => "overview.html",
