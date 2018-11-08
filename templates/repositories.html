@@ -11,12 +11,13 @@
 </div>
 <div class="ui bottom attached active tab segment">
     <div class="ui relaxed divided list">
+        {% for repo in cur_user_repositories %}
         <div class="item">
             <div class="content">
-                <a class="ui middle header" href="#">
-                    Snickerdoodle
+                <a class="ui middle header" href="/{{cur_user_fullname}}/{{repo.repo_name}}">
+                    {{repo.repo_name}}
                     <div class="sub header">
-                        An excellent companion
+                        {{repo.repo_description}}
                     </div>
                 </a>
                 <div class="ui horizontal list">
@@ -31,46 +32,7 @@
                 </div>
             </div>
         </div>
-        <div class="item">
-            <div class="content">
-                <a class="ui middle header" href="#">
-                    Snickerdoodle
-                    <div class="sub header">
-                        An excellent companion
-                    </div>
-                </a>
-                <div class="ui horizontal list">
-                    <a href="#" class="item">
-                        <img src="assets/octicons-8.1.0/package/build/svg/star.svg" height="17" />
-                        Star
-                    </a>
-                    <a href="#" class="item">
-                        <img src="assets/octicons-8.1.0/package/build/svg/git-branch.svg" height="17" />
-                        Fork
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="item">
-            <div class="content">
-                <a class="ui middle header" href="#">
-                    Snickerdoodle
-                    <div class="sub header">
-                        An excellent companion
-                    </div>
-                </a>
-                <div class="ui horizontal list">
-                    <a href="#" class="item">
-                        <img src="assets/octicons-8.1.0/package/build/svg/star.svg" height="17" />
-                        Star
-                    </a>
-                    <a href="#" class="item">
-                        <img src="assets/octicons-8.1.0/package/build/svg/git-branch.svg" height="17" />
-                        Fork
-                    </a>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock overview %}

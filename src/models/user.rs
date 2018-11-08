@@ -32,10 +32,10 @@ pub fn insert_user(connection:&Connection, user:&User){
 pub fn find_user_by_fullname(connection:&Connection, user_fullname:&String)->Option<User>{
     match connection{
         Connection::Mysql(conn)=>{
-            let mut stmt_insert = conn.prepare(r"SELECT uuid, user_name, user_fullname, user_email, user_password
+            let mut stmt = conn.prepare(r"SELECT uuid, user_name, user_fullname, user_email, user_password
                                                 FROM users
                                                 WHERE user_fullname=:user_fullname").unwrap();
-            let row = stmt_insert.execute(params!{
+            let row = stmt.execute(params!{
                     "user_fullname" => user_fullname
                 }).unwrap().last();
                 
@@ -58,10 +58,10 @@ pub fn find_user_by_fullname(connection:&Connection, user_fullname:&String)->Opt
 pub fn find_user_by_uuid(connection:&Connection, uuid:&String)->Option<User>{
     match connection{
         Connection::Mysql(conn)=>{
-            let mut stmt_insert = conn.prepare(r"SELECT (uuid, user_name, user_fullname, user_email, user_password)
+            let mut stmt = conn.prepare(r"SELECT (uuid, user_name, user_fullname, user_email, user_password)
                                                 FROM users
                                                 WHERE uuid=:uuid").unwrap();
-            let row = stmt_insert.execute(params!{
+            let row = stmt.execute(params!{
                     "uuid" => uuid
                 }).unwrap().last();
                 

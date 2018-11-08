@@ -15,7 +15,10 @@ extern crate tera;
 use tera::Tera;
 
 #[macro_use]
+extern crate serde_derive;
+extern crate serde;
 extern crate serde_json;
+
 
 #[macro_use]
 extern crate lazy_static;
@@ -82,7 +85,7 @@ fn main() {
             .resource("", |r| r.f(controllers::home::index))
             .resource("/", |r| r.f(controllers::home::index))
             .resource("/{name:[0-9a-zA-Z]+}", |r| r.method(Method::GET).with(controllers::user::profile))
-            .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}", |r| r.method(Method::GET).f(controllers::repo::repo_page))
+            .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}", |r| r.method(Method::GET).with(controllers::repo::repo_page))
             .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}.git/info/refs", |r| r.method(Method::GET).with(controllers::git::git_advertise_refs))
             .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}.git/git-upload-pack", |r| r.method(Method::POST).with(controllers::git::git_upload_pack_handler))
             .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}.git/git-receive-pack", |r| r.method(Method::POST).with(controllers::git::git_receive_pack_handler))

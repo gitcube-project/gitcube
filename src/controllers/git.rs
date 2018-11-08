@@ -11,10 +11,14 @@ use ::cmd::git_receive_pack_adverise_refs;
 use ::cmd::git_upload_pack;
 use ::cmd::git_receive_pack;
 
-pub fn git_advertise_refs((req, path, query):(HttpRequest<AppEnv>, Path<(String,)>, Query<HashMap<String, String>>)) -> HttpResponse {
+pub fn git_advertise_refs((req, path, query):(HttpRequest<AppEnv>, Path<(String,String)>, Query<HashMap<String, String>>)) -> HttpResponse {
+    let repo_path = &format!("{git}/{user}/{repo}",
+            git = std::env::var("GIT_PATH").expect("GIT_PATH must be set"),
+            user = &path.0,
+            repo = &path.1);
     if let Some(service) = query.get("service"){
         if service=="git-upload-pack"{
-            let git_ret = git_upload_pack_adverise_refs("git_repo/test");
+            let git_ret = git_upload_pack_adverise_refs(&repo_path);
             let packet = b"# service=git-upload-pack\n";
             let hex = format!("{:>04x}", packet.len() + 4);
 
@@ -31,7 +35,7 @@ pub fn git_advertise_refs((req, path, query):(HttpRequest<AppEnv>, Path<(String,
                 .body(body)
 
         }else if service=="git-receive-pack"{
-            let git_ret = git_receive_pack_adverise_refs("git_repo/test");
+            let git_ret = git_receive_pack_adverise_refs(&repo_path);
             let packet = b"# service=git-receive-pack\n";
             let hex = format!("{:>04x}", packet.len() + 4);
 
@@ -54,8 +58,12 @@ pub fn git_advertise_refs((req, path, query):(HttpRequest<AppEnv>, Path<(String,
     }
 }
 
-pub fn git_upload_pack_handler((req, body):(HttpRequest<AppEnv>, bytes::Bytes)) -> HttpResponse {
-    let ret_val = git_upload_pack("git_repo/test", &body);
+pub fn git_upload_pack_handler((req, path, body):(HttpRequest<AppEnv>, Path<(String,String)>, bytes::Bytes)) -> HttpResponse {
+    let repo_path = &format!("{git}/{user}/{repo}",
+            git = std::env::var("GIT_PATH").expect("GIT_PATH must be set"),
+            user = &path.0,
+            repo = &path.1);
+    let ret_val = git_upload_pack(&repo_path, &body);
     HttpResponse::Ok()
         .header("Expires", "Fri, 01 Jan 1980 00:00:00 GMT")
         .header("Pragma", "no-cache")
@@ -64,8 +72,12 @@ pub fn git_upload_pack_handler((req, body):(HttpRequest<AppEnv>, bytes::Bytes)) 
         .body(ret_val)
 }
 
-pub fn git_receive_pack_handler((req, body):(HttpRequest<AppEnv>, bytes::Bytes)) -> HttpResponse {
-    let ret_val = git_receive_pack("git_repo/test", &body);
+pub fn git_receive_pack_handler((req, path, body):(HttpRequest<AppEnv>, Path<(String,String)>, bytes::Bytes)) -> HttpResponse {
+    let repo_path = &format!("{git}/{user}/{repo}",
+            git = std::env::var("GIT_PATH").expect("GIT_PATH must be set"),
+            user = &path.0,
+            repo = &path.1);
+    let ret_val = git_receive_pack(&repo_path, &body);
     HttpResponse::Ok()
         .header("Expires", "Fri, 01 Jan 1980 00:00:00 GMT")
         .header("Pragma", "no-cache")

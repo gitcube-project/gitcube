@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use uuid::Uuid;
 
-use actix_web::{Form, HttpRequest, HttpResponse};
+use actix_web::{Form, Path, HttpRequest, HttpResponse};
 use actix_web::middleware::session::{RequestSession};
 
 use ::TERA;
@@ -11,6 +11,8 @@ use super::session_to_context;
 
 use ::models::repo::Repo;
 use ::models::repo::insert_repo;
+
+use ::cmd::git_init;
 
 pub fn new_repository_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let mut context = session_to_context(&req.session());
@@ -41,15 +43,20 @@ pub fn new_repository_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<Str
             repo_create_time:chrono::Utc::now().format("%Y-%m-%d %H:%M:%S").to_string()
         });
         // run git cmd
-
+        git_init(&format!("{git}/{user}/{repo}",
+            git = std::env::var("GIT_PATH").expect("GIT_PATH must be set"),
+            user = &user_fullname,
+            repo = &form["repo_name"]));
         HttpResponse::Found().header("Location", format!("/{}/{}",&user_fullname, &form["repo_name"])).finish()
     }else{
         HttpResponse::BadRequest().finish()
     }
 }
 
-pub fn repo_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
-    let context = session_to_context(&req.session());
+pub fn repo_page((req, path): (HttpRequest<AppEnv>, Path<(String,String)>)) -> HttpResponse {
+    let mut context = session_to_context(&req.session());
+    context.insert("cur_user_fullname", &path.0);
+    context.insert("cur_repo_name", &path.1);
     let contents = TERA.render("repository.html", &context).unwrap();
     HttpResponse::Ok().body(&contents)
 }

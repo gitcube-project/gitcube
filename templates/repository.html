@@ -3,5 +3,26 @@
 {% block title %} profile - GitCube {% endblock title %}
 
 {% block content %}
+<div>
+    <div>
+        <div class="ui container">
+            <div class="ui big breadcrumb">
+                <a class="section">{{cur_user_fullname}}</a>
+                <div class="divider"> / </div>
+                <a class="section">{{cur_repo_name}}</a>
+            </div>
+        </div>
+        <div class="ui container" style="margin-botto:0px">
+            <div class="ui tabular menu">
+                <div class="active item">Tab</div>
+            </div>
+        </div>
+        <div class="ui divider" style="margin-botto:0px"></div>
+    </div>
+
+    <div class="ui container">
+    </div>
+
+</div>
 
 {% endblock overview %}

@@ -13,6 +13,7 @@ use ::models::user::User;
 use ::models::user::insert_user;
 use ::models::user::find_user_by_email;
 use ::models::user::find_user_by_fullname;
+use ::models::repo::find_repo_by_user_uuid;
 
 
 pub fn signin_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
@@ -109,32 +110,34 @@ pub fn profile((req, path, query):(HttpRequest<AppEnv>, Path<(String,)>, Query<H
     if let Some(cur_user) = find_user_by_fullname(&state.connection, user_fullname){
         context.insert("cur_user_name", &cur_user.user_name);
         context.insert("cur_user_fullname", &cur_user.user_fullname);
-    }else{
-        return HttpResponse::Ok().body("user no find");
-    }
 
-    let path = match query.get("tab"){
-        None => "overview.html",
-        Some(caps) => {
-            if caps == "overview" {
-                "overview.html"
-            }else if caps == "repositories" {
-                "repositories.html"
-            }else if caps == "stars" {
-                "stars.html"
-            }else if caps == "followers" {
-                "followers.html"
-            }else if caps == "following" {
-                "following.html"
-            }else{
-                "overview.html"
+        let path = match query.get("tab"){
+            None => "overview.html",
+            Some(caps) => {
+                if caps == "overview" {
+                    "overview.html"
+                }else if caps == "repositories" {
+                    let cur_user_repos = find_repo_by_user_uuid(&state.connection, &cur_user.uuid);
+                    context.insert("cur_user_repositories", &cur_user_repos);
+                    "repositories.html"
+                }else if caps == "stars" {
+                    "stars.html"
+                }else if caps == "followers" {
+                    "followers.html"
+                }else if caps == "following" {
+                    "following.html"
+                }else{
+                    "overview.html"
+                }
             }
-        }
-    };
+        };
 
-    let contents = TERA.render(path, &context).unwrap();
-    
-    HttpResponse::Ok()
-        .content_type("text/html")
-        .body(&contents)
+        let contents = TERA.render(path, &context).unwrap();
+        
+        HttpResponse::Ok()
+            .content_type("text/html")
+            .body(&contents)
+    }else{
+        HttpResponse::Ok().body("user no find")
+    }
 }
