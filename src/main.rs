@@ -1,4 +1,5 @@
 extern crate uuid;
+extern crate bytes;
 extern crate chrono;
 
 extern crate actix_web;
@@ -28,6 +29,7 @@ use std::env;
 
 pub mod controllers;
 pub mod models;
+pub mod cmd;
 
 use models::Connection;
 
@@ -81,7 +83,8 @@ fn main() {
             .resource("/", |r| r.f(controllers::home::index))
             .resource("/{name:[0-9a-zA-Z]+}", |r| r.method(Method::GET).with(controllers::user::profile))
             .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}", |r| r.method(Method::GET).f(controllers::repo::repo_page))
-            .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}.git", |r| r.method(Method::GET).f(controllers::repo::repo_page))
+            .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}.git/info/refs", |r| r.method(Method::GET).with(controllers::git::git_advertise_refs))
+            .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}.git/git-upload-pack", |r| r.method(Method::POST).with(controllers::git::git_upload_pack_handler))
     )
     .bind("127.0.0.1:8088")
     .unwrap()
