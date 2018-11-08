@@ -6,16 +6,26 @@ use actix_web::{http::Method, Path, Query, Binary, HttpRequest, HttpResponse, Ht
 use actix_web::middleware::session::{RequestSession};
 
 use super::super::AppEnv;
-use ::cmd::git_upload_pack_adverise_refs;
-use ::cmd::git_receive_pack_adverise_refs;
-use ::cmd::git_upload_pack;
-use ::cmd::git_receive_pack;
+use ::git::http::git_upload_pack_adverise_refs;
+use ::git::http::git_receive_pack_adverise_refs;
+use ::git::http::git_upload_pack;
+use ::git::http::git_receive_pack;
+
+use ::models::repo::find_repo_by_username_reponame;
 
 pub fn git_advertise_refs((req, path, query):(HttpRequest<AppEnv>, Path<(String,String)>, Query<HashMap<String, String>>)) -> HttpResponse {
-    let repo_path = &format!("{git}/{user}/{repo}",
+    let state = req.state();
+    let repo_opt = find_repo_by_username_reponame(&state.connection, &path.0, &path.1);
+
+    if repo_opt.is_none(){
+        return HttpResponse::BadRequest().finish();
+    }
+
+    let repo = repo_opt.unwrap();
+    
+    let repo_path = &format!("{git}/{uuid}",
             git = std::env::var("GIT_PATH").expect("GIT_PATH must be set"),
-            user = &path.0,
-            repo = &path.1);
+            uuid = &repo.uuid);
     if let Some(service) = query.get("service"){
         if service=="git-upload-pack"{
             let git_ret = git_upload_pack_adverise_refs(&repo_path);
@@ -59,10 +69,18 @@ pub fn git_advertise_refs((req, path, query):(HttpRequest<AppEnv>, Path<(String,
 }
 
 pub fn git_upload_pack_handler((req, path, body):(HttpRequest<AppEnv>, Path<(String,String)>, bytes::Bytes)) -> HttpResponse {
-    let repo_path = &format!("{git}/{user}/{repo}",
+    let state = req.state();
+    let repo_opt = find_repo_by_username_reponame(&state.connection, &path.0, &path.1);
+
+    if repo_opt.is_none(){
+        return HttpResponse::BadRequest().finish();
+    }
+    
+    let repo = repo_opt.unwrap();
+    
+    let repo_path = &format!("{git}/{uuid}",
             git = std::env::var("GIT_PATH").expect("GIT_PATH must be set"),
-            user = &path.0,
-            repo = &path.1);
+            uuid = &repo.uuid);
     let ret_val = git_upload_pack(&repo_path, &body);
     HttpResponse::Ok()
         .header("Expires", "Fri, 01 Jan 1980 00:00:00 GMT")
@@ -73,10 +91,18 @@ pub fn git_upload_pack_handler((req, path, body):(HttpRequest<AppEnv>, Path<(Str
 }
 
 pub fn git_receive_pack_handler((req, path, body):(HttpRequest<AppEnv>, Path<(String,String)>, bytes::Bytes)) -> HttpResponse {
-    let repo_path = &format!("{git}/{user}/{repo}",
+    let state = req.state();
+    let repo_opt = find_repo_by_username_reponame(&state.connection, &path.0, &path.1);
+
+    if repo_opt.is_none(){
+        return HttpResponse::BadRequest().finish();
+    }
+    
+    let repo = repo_opt.unwrap();
+    
+    let repo_path = &format!("{git}/{uuid}",
             git = std::env::var("GIT_PATH").expect("GIT_PATH must be set"),
-            user = &path.0,
-            repo = &path.1);
+            uuid = &repo.uuid);
     let ret_val = git_receive_pack(&repo_path, &body);
     HttpResponse::Ok()
         .header("Expires", "Fri, 01 Jan 1980 00:00:00 GMT")

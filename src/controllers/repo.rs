@@ -12,7 +12,7 @@ use super::session_to_context;
 use ::models::repo::Repo;
 use ::models::repo::insert_repo;
 
-use ::cmd::git_init;
+use ::git::repo::git_init;
 
 pub fn new_repository_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let mut context = session_to_context(&req.session());
@@ -35,18 +35,18 @@ pub fn new_repository_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<Str
         let user_fullname = req.session().get::<String>("user_fullname").unwrap().unwrap();
         let context = session_to_context(&req.session());
         // insert to db
+        let repo_uuid = Uuid::new_v4().to_hyphenated().to_string();
         insert_repo(&state.connection, &Repo{
-            uuid:Uuid::new_v4().to_hyphenated().to_string(),
+            uuid:repo_uuid.clone(),
             repo_name:form["repo_name"].clone(), 
             repo_description:form["description"].clone(), 
             repo_owner_uuid:uuid.clone(), 
             repo_create_time:chrono::Utc::now().format("%Y-%m-%d %H:%M:%S").to_string()
         });
         // run git cmd
-        git_init(&format!("{git}/{user}/{repo}",
+        git_init(&format!("{git}/{uuid}",
             git = std::env::var("GIT_PATH").expect("GIT_PATH must be set"),
-            user = &user_fullname,
-            repo = &form["repo_name"]));
+            uuid = &repo_uuid));
         HttpResponse::Found().header("Location", format!("/{}/{}",&user_fullname, &form["repo_name"])).finish()
     }else{
         HttpResponse::BadRequest().finish()

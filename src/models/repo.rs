@@ -30,6 +30,37 @@ pub fn insert_repo(connection:&Connection, repo:&Repo){
     }
 }
 
+pub fn find_repo_by_username_reponame(connection:&Connection, user_fullname:&String, repo_name:&String) -> Option<Repo>{
+    match connection{
+        Connection::Mysql(conn)=>{
+            let mut stmt = conn.prepare(r"SELECT repos.uuid, repo_name, repo_description, repo_owner_uuid, repo_create_time
+                                                FROM repos
+                                                LEFT JOIN users
+                                                ON repos.repo_owner_uuid=users.uuid
+                                                WHERE user_fullname=:user_fullname AND
+                                                repo_name=:repo_name").unwrap();
+            let row = stmt.execute(params!{
+                    "user_fullname" => user_fullname,
+                    "repo_name" => repo_name
+                }).unwrap().last();
+            
+            match row{
+                Some(v)=>{
+                    let repo = v.unwrap();
+                    Some(Repo{
+                        uuid:repo.get(0).unwrap(),
+                        repo_name:repo.get(1).unwrap(),
+                        repo_description:repo.get(2).unwrap(),
+                        repo_owner_uuid:repo.get(3).unwrap(),
+                        repo_create_time:NaiveDateTime::from(repo.get(4).unwrap()).format("%Y-%m-%d %H:%M:%S").to_string(),
+                    })
+                },
+                None=>None
+            }
+        }
+    }
+}
+
 pub fn find_repo_by_user_uuid(connection:&Connection, uuid:&String) -> Vec<Repo>{
     match connection{
         Connection::Mysql(conn)=>{

@@ -32,7 +32,7 @@ use std::env;
 
 pub mod controllers;
 pub mod models;
-pub mod cmd;
+pub mod git;
 
 use models::Connection;
 
