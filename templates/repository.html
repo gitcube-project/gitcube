@@ -1,26 +1,82 @@
 {% extends "layouts/main_layout.html" %}
 
-{% block title %} profile - GitCube {% endblock title %}
+{% block title %} {{cur_user_fullname}} - GitCube {% endblock title %}
+
+{% block css %}
+<style type="text/css">
+    .ui.container.tab_header>.menu{
+        border-bottom:none;
+    }
+    .ui.container.tab_header{
+        margin-bottom:0px;
+        border-bottom:none;
+    }
+    .ui.divider.tab_divider{
+        margin-top:0px;
+        border-bottom:none;
+    }
+</style>
+{% endblock css %}
 
 {% block content %}
 <div>
     <div>
         <div class="ui container">
-            <div class="ui big breadcrumb">
-                <a class="section">{{cur_user_fullname}}</a>
-                <div class="divider"> / </div>
-                <a class="section">{{cur_repo_name}}</a>
+            <div class="ui grid">
+                <div class="row">
+                    <div class="left floated four wide column">
+                        <div class="ui big breadcrumb">
+                            <a class="section">{{cur_user_fullname}}</a>
+                            <div class="divider"> / </div>
+                            <a class="section">{{cur_repo_name}}</a>
+                        </div>
+                    </div>
+                    <div class="right floated six wide column">
+                        <div class="ui item">
+                            <div class="ui labeled button" tabindex="0">
+                                <a class="ui basic button" href="#">
+                                    <i class="eye icon"></i>Unwatch
+                                </a>
+                                <a class="ui basic label" href="#">
+                                    1
+                                </a>
+                            </div>
+                            <div class="ui labeled button" tabindex="0">
+                                <a class="ui basic button" href="#">
+                                    <i class="star outline icon"></i>Star
+                                </a>
+                                <a class="ui basic label" href="#">
+                                    0
+                                </a>
+                            </div>
+                            
+                            <div class="ui labeled button" tabindex="0">
+                                <a class="ui basic button poping up" href="#">
+                                    <img src="/assets/octicons-8.1.0/package/build/svg/git-branch.svg" height="14"/>Fork
+                                </a>
+                                <a class="ui basic label" href="#">
+                                    0
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="ui container" style="margin-botto:0px">
+        <div class="ui container tab_header">
             <div class="ui tabular menu">
                 <div class="active item">Tab</div>
             </div>
         </div>
-        <div class="ui divider" style="margin-botto:0px"></div>
+        <div class="ui divider tab_divider" style="border-bottom:none;"></div>
     </div>
 
     <div class="ui container">
+        <h3 class="ui top attached header">
+            {{cur_user_fullname}}
+        </h3>
+        <div class="ui attached segment">
+        </div>
     </div>
 
 </div>

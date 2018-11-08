@@ -10,7 +10,7 @@
     <!-- Site Properties -->
     <title>{% block title %}{% endblock title %}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" /> {% block css %} {% endblock css %}
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
     <style type="text/css">
         .hidden.menu {
             display: none;
@@ -107,6 +107,8 @@
             }
         }
     </style>
+
+    {% block css %} {% endblock css %}
 
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
