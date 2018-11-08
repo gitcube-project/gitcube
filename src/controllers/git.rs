@@ -7,17 +7,19 @@ use actix_web::middleware::session::{RequestSession};
 
 use super::super::AppEnv;
 use ::cmd::git_upload_pack_adverise_refs;
+use ::cmd::git_receive_pack_adverise_refs;
 use ::cmd::git_upload_pack;
-
+use ::cmd::git_receive_pack;
 
 pub fn git_advertise_refs((req, path, query):(HttpRequest<AppEnv>, Path<(String,)>, Query<HashMap<String, String>>)) -> HttpResponse {
     if let Some(service) = query.get("service"){
         if service=="git-upload-pack"{
             let git_ret = git_upload_pack_adverise_refs("git_repo/test");
             let packet = b"# service=git-upload-pack\n";
+            let hex = format!("{:>04x}", packet.len() + 4);
 
             let mut body:Vec<u8> = Vec::new();
-            body.extend(b"001e");
+            body.extend(hex.as_bytes());
             body.extend(packet);
             body.extend(b"0000");
             body.extend(&git_ret);
@@ -26,6 +28,23 @@ pub fn git_advertise_refs((req, path, query):(HttpRequest<AppEnv>, Path<(String,
                 .header("Pragma", "no-cache")
                 .header("Cache-Control", "no-cache, max-age=0, must-revalidate")
                 .header("Content-Type", "application/x-git-upload-pack-advertisement")
+                .body(body)
+
+        }else if service=="git-receive-pack"{
+            let git_ret = git_receive_pack_adverise_refs("git_repo/test");
+            let packet = b"# service=git-receive-pack\n";
+            let hex = format!("{:>04x}", packet.len() + 4);
+
+            let mut body:Vec<u8> = Vec::new();
+            body.extend(hex.as_bytes());
+            body.extend(packet);
+            body.extend(b"0000");
+            body.extend(&git_ret);
+            HttpResponse::Ok()
+                .header("Expires", "Fri, 01 Jan 1980 00:00:00 GMT")
+                .header("Pragma", "no-cache")
+                .header("Cache-Control", "no-cache, max-age=0, must-revalidate")
+                .header("Content-Type", "application/x-git-receive-pack-advertisement")
                 .body(body)
         }else{
             HttpResponse::BadRequest().finish()
@@ -42,5 +61,15 @@ pub fn git_upload_pack_handler((req, body):(HttpRequest<AppEnv>, bytes::Bytes)) 
         .header("Pragma", "no-cache")
         .header("Cache-Control", "no-cache, max-age=0, must-revalidate")
         .header("Content-Type", "application/x-git-upload-pack-result")
+        .body(ret_val)
+}
+
+pub fn git_receive_pack_handler((req, body):(HttpRequest<AppEnv>, bytes::Bytes)) -> HttpResponse {
+    let ret_val = git_receive_pack("git_repo/test", &body);
+    HttpResponse::Ok()
+        .header("Expires", "Fri, 01 Jan 1980 00:00:00 GMT")
+        .header("Pragma", "no-cache")
+        .header("Cache-Control", "no-cache, max-age=0, must-revalidate")
+        .header("Content-Type", "application/x-git-receive-pack-result")
         .body(ret_val)
 }

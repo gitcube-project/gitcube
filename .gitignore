@@ -2,3 +2,4 @@
 /public/*.cache
 **/*.rs.bk
 /Cargo.lock
+/git_repo
