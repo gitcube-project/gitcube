@@ -61,7 +61,46 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+            </div>
+        </div>
+        <div class="ui container tab_header">
+            <div class="ui tabular menu">
+                <div class="active item">Code</div>
+            </div>
+        </div>
+        <div class="ui divider tab_divider" style="border-bottom:none;"></div>
+    </div>
+
+    <div class="ui container">
+
+        <div class="ui grid">
+            <div class="row">
+                <div class="left floated four wide column">
+                    <div class="ui floating dropdown icon button">
+                        <img src="/assets/octicons-8.1.0/package/build/svg/git-branch.svg" height="14"/>
+                        <span class="text">master</span>
+                        <div class="menu">
+                            <div class="ui icon search input">
+                                <i class="search icon"></i>
+                                <input type="text" placeholder="Search branches...">
+                            </div>
+                            <div class="divider"></div>
+                            <div class="header">
+                            <i class="tags icon"></i>
+                            branches
+                            </div>
+                            <div class="scrolling menu">
+                                <div class="item">
+                                    master
+                                </div>
+                                <div class="item">
+                                    dev
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="right floated five wide column">
                     <div class="ui action input">
                         <input type="text" value="http://ww.short.url/c0opq" readonly>
                         <select class="ui compact selection dropdown">
@@ -75,15 +114,7 @@
                 </div>
             </div>
         </div>
-        <div class="ui container tab_header">
-            <div class="ui tabular menu">
-                <div class="active item">Code</div>
-            </div>
-        </div>
-        <div class="ui divider tab_divider" style="border-bottom:none;"></div>
-    </div>
 
-    <div class="ui container">
         <h3 class="ui top attached header">
             {{cur_user_fullname}}
         </h3>
