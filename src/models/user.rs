@@ -7,6 +7,7 @@ pub struct User{
     pub fullname:String,
     pub email:String,
     pub password:String,
+    pub is_block:i32
 }
 
 
@@ -14,7 +15,7 @@ pub fn insert_user(connection:&Connection, user:&User){
     match connection{
         Connection::Mysql(conn)=>{
             let mut stmt_insert = conn.prepare(r"INSERT INTO users
-                                       (uuid, name, fullname, email, password)
+                                       (uuid, name, fullname, email, password, is_block)
                                         VALUES
                                        (:uuid, :name, :fullname, :email, :password)").unwrap();
             stmt_insert.execute(params!{
@@ -23,6 +24,7 @@ pub fn insert_user(connection:&Connection, user:&User){
                     "fullname" => &user.fullname,
                     "email" => &user.email,
                     "password" => &user.password,
+                    "is_block" => &user.is_block
                 }).unwrap();
         }
     }
@@ -32,7 +34,7 @@ pub fn insert_user(connection:&Connection, user:&User){
 pub fn find_user_by_fullname(connection:&Connection, fullname:&String)->Option<User>{
     match connection{
         Connection::Mysql(conn)=>{
-            let mut stmt = conn.prepare(r"SELECT uuid, name, fullname, email, password
+            let mut stmt = conn.prepare(r"SELECT uuid, name, fullname, email, password, is_block
                                                 FROM users
                                                 WHERE fullname=:fullname").unwrap();
             let row = stmt.execute(params!{
@@ -48,6 +50,7 @@ pub fn find_user_by_fullname(connection:&Connection, fullname:&String)->Option<U
                         fullname:user.get(2).unwrap(),
                         email:user.get(3).unwrap(),
                         password:user.get(4).unwrap(),
+                        is_block:user.get(5).unwrap()
                     })},
                 None=>None
             }
@@ -58,7 +61,7 @@ pub fn find_user_by_fullname(connection:&Connection, fullname:&String)->Option<U
 pub fn find_user_by_uuid(connection:&Connection, uuid:&String)->Option<User>{
     match connection{
         Connection::Mysql(conn)=>{
-            let mut stmt = conn.prepare(r"SELECT (uuid, name, fullname, email, password)
+            let mut stmt = conn.prepare(r"SELECT (uuid, name, fullname, email, password, is_block)
                                                 FROM users
                                                 WHERE uuid=:uuid").unwrap();
             let row = stmt.execute(params!{
@@ -74,6 +77,7 @@ pub fn find_user_by_uuid(connection:&Connection, uuid:&String)->Option<User>{
                         fullname:user.get(2).unwrap(),
                         email:user.get(3).unwrap(),
                         password:user.get(4).unwrap(),
+                        is_block:user.get(5).unwrap()
                     })},
                 None=>None
             }
@@ -84,7 +88,7 @@ pub fn find_user_by_uuid(connection:&Connection, uuid:&String)->Option<User>{
 pub fn find_user_by_email(connection:&Connection, email:&String)->Option<User>{
     match connection{
         Connection::Mysql(conn)=>{
-            let mut stmt_insert = conn.prepare(r"SELECT uuid, name, fullname, email, password
+            let mut stmt_insert = conn.prepare(r"SELECT uuid, name, fullname, email, password, is_block
                                                 FROM users
                                                 WHERE email=:email").unwrap();
             let row = stmt_insert.execute(params!{
@@ -100,6 +104,7 @@ pub fn find_user_by_email(connection:&Connection, email:&String)->Option<User>{
                         fullname:user.get(2).unwrap(),
                         email:user.get(3).unwrap(),
                         password:user.get(4).unwrap(),
+                        is_block:user.get(5).unwrap()
                     })},
                 None=>None
             }

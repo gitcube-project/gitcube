@@ -11,6 +11,7 @@ use super::session_to_context;
 
 use ::models::repo::Repo;
 use ::models::repo::insert_repo;
+use ::models::repo::find_repo_by_username_reponame;
 
 use ::git::repo::git_init;
 
@@ -41,7 +42,10 @@ pub fn new_repository_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<Str
             name:form["repo_name"].clone(), 
             description:form["description"].clone(), 
             owner_uuid:uuid.clone(), 
-            create_time:chrono::Utc::now().format("%Y-%m-%d %H:%M:%S").to_string()
+            create_time:chrono::Utc::now().format("%Y-%m-%d %H:%M:%S").to_string(),
+            is_private:0,
+            is_fork:0,
+            fork_uuid:Uuid::nil().to_hyphenated().to_string()
         });
         // run git cmd
         git_init(&format!("{git}/{uuid}",
@@ -54,6 +58,13 @@ pub fn new_repository_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<Str
 }
 
 pub fn repo_page((req, path): (HttpRequest<AppEnv>, Path<(String,String)>)) -> HttpResponse {
+    let state = req.state();
+    let repo_opt = find_repo_by_username_reponame(&state.connection, &path.0, &path.1);
+
+    if repo_opt.is_none(){
+        return HttpResponse::BadRequest().finish();
+    }
+    
     let mut context = session_to_context(&req.session());
     context.insert("cur_user_fullname", &path.0);
     context.insert("cur_repo_name", &path.1);

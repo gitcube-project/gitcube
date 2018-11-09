@@ -14,10 +14,10 @@
         {% for repo in cur_user_repositories %}
         <div class="item">
             <div class="content">
-                <a class="ui middle header" href="/{{cur_user_fullname}}/{{repo.repo_name}}">
-                    {{repo.repo_name}}
+                <a class="ui middle header" href="/{{cur_user_fullname}}/{{repo.name}}">
+                    {{repo.name}}
                     <div class="sub header">
-                        {{repo.repo_description}}
+                        {{repo.description}}
                     </div>
                 </a>
                 <div class="ui horizontal list">

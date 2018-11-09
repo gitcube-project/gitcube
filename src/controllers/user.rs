@@ -89,7 +89,8 @@ pub fn signup_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
             name:form["name"].clone(), 
             fullname:form["name"].clone(), 
             email:form["email"].clone(), 
-            password:form["password"].clone()
+            password:form["password"].clone(),
+            is_block:0
         });
         let mut context = session_to_context(&req.session());
         context.insert("message_header", "Your user registration was successful.");
