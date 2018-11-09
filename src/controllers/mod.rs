@@ -12,7 +12,8 @@ pub fn session_to_context(session:&Session) -> Context{
     let properties = vec!["uuid",
                         "user_name",
                         "user_fullname",
-                        "user_email"];
+                        "user_email",
+                        "user_avatar"];
     for each in properties{
         if let Some(v) = session.get::<String>(each).unwrap(){
             context.insert(each, &v);

@@ -5,11 +5,11 @@ profile - GitCube
 {% endblock title %}
 
 {% block content %}
-<div class="container">
+<div class="ui container">
     <div class="ui grid centered">
         <div class="three wide column">
-            <a href="https://avatars0.githubusercontent.com/u/13167278?s=460&v=4" class="ui small image">
-                <img src="https://avatars0.githubusercontent.com/u/13167278?s=460&v=4">
+            <a href="{{user_avatar}}" class="ui small image">
+                <img src="{{user_avatar}}">
             </a>
             <h2 class="ui header">
                 {{ cur_user_name }}

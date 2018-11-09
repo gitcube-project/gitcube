@@ -37,6 +37,7 @@ pub fn signin_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
                     req.session().set("user_name", &v.name).unwrap();
                     req.session().set("user_fullname", &v.fullname).unwrap();
                     req.session().set("user_email", &v.email).unwrap();
+                    req.session().set("user_avatar", &v.avatar).unwrap();
                     
                     HttpResponse::Found().header("Location", "/").finish()
                 }else{
@@ -90,7 +91,8 @@ pub fn signup_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
             fullname:form["name"].clone(), 
             email:form["email"].clone(), 
             password:form["password"].clone(),
-            is_block:0
+            is_block:0,
+            avatar:"/avatar/default.png".to_string()
         });
         let mut context = session_to_context(&req.session());
         context.insert("message_header", "Your user registration was successful.");

@@ -2,7 +2,7 @@
 
 
 {% block overview %}
-<div class="ui top attached tabular menu">
+<div class="ui top attached tabular menu" style="min-width: 830px;">
     <a class="active item" href="/{{user_fullname}}">Overview</a>
     <a class="item" href="/{{user_fullname}}?tab=repositories">Repositories</a>
     <a class="item" href="/{{user_fullname}}?tab=stars">Stars</a>
@@ -68,14 +68,11 @@
         </div>
     </div>
     -->
-    <div class="ui two column divided grid">
+    <div class="ui container">
+        <h2 class="ui header">
+            Activity
+        </h2>
         <div id="cal-heatmap" class="twelve wide column" style="min-width: 660px;"></div>
-        <div class="two wide column">
-            <div class="ui buttons vertical">
-                <button class="ui button" id="previousSelector-a-previous">previous</button>
-                <button class="ui button" id="previousSelector-a-next">next</button>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -85,8 +82,6 @@
 <script type="text/javascript">
 	var cal = new CalHeatMap();
     cal.init({ itemSelector: "#cal-heatmap",
-        previousSelector: "#previousSelector-a-previous",
-        nextSelector: "#previousSelector-a-next",
         domain: "year",
         subDomain: "day",
         data: "datas-years.json",
