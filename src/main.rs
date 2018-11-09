@@ -2,6 +2,14 @@ extern crate uuid;
 extern crate bytes;
 extern crate chrono;
 
+extern crate argparse;
+use argparse::{ArgumentParser, StoreTrue, Store};
+
+#[macro_use]
+extern crate log;
+extern crate fern;
+use log::{info, trace, warn};
+
 extern crate actix_web;
 use actix_web::{App, http::Method, fs, server};
 use actix_web::middleware::session::{SessionStorage, CookieSessionBackend};
@@ -49,7 +57,23 @@ pub struct AppEnv {
     connection: Connection,
 }
 
-
+fn setup_logger() -> Result<(), fern::InitError> {
+    fern::Dispatch::new()
+        .format(|out, message, record| {
+            out.finish(format_args!(
+                "{}[{}][{}] {}",
+                chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
+                record.target(),
+                record.level(),
+                message
+            ))
+        })
+        .level(log::LevelFilter::Debug)
+        .chain(std::io::stdout())
+        .chain(fern::log_file("output.log")?)
+        .apply()?;
+    Ok(())
+}
 
 fn establish_connection() -> Connection {
     dotenv().ok();
@@ -59,7 +83,8 @@ fn establish_connection() -> Connection {
     Connection::new_mysql(&database_url)
 }
 
-fn main() {
+fn start_server(){
+    info!("Web server is starting.");
     server::new(|| App
             ::with_state(AppEnv { connection: establish_connection() })
             .middleware(SessionStorage::new(
@@ -94,4 +119,23 @@ fn main() {
     .bind("127.0.0.1:8088")
     .unwrap()
     .run();
+}
+
+fn main() {
+    let mut web = true;
+    {
+        let mut ap = ArgumentParser::new();
+        ap.set_description("GitCube : A rust Git service.");
+        ap.refer(&mut web)
+            .add_option(&["-w", "--web"], StoreTrue,
+            "Start web server");
+        ap.parse_args_or_exit();
+    }
+
+    setup_logger().unwrap();
+
+    if web{
+        start_server();
+    }
+    
 }
