@@ -1,6 +1,7 @@
 /target
 /public/*.cache
 **/*.rs.bk
-/Cargo.lock
+Cargo.lock
 /git_repo
 output.log
+.env
