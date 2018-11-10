@@ -108,6 +108,9 @@ fn start_server(){
                 r.method(Method::GET).f(controllers::repo::new_repository_page);
                 r.method(Method::POST).with(controllers::repo::new_repository_action)
             })
+            .resource("/404", |r|{
+                r.method(Method::GET).f(controllers::status::page_404)
+            })
             .resource("", |r| r.f(controllers::home::index))
             .resource("/", |r| r.f(controllers::home::index))
             .resource("/{name:[0-9a-zA-Z]+}", |r| r.method(Method::GET).with(controllers::user::profile))

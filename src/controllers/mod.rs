@@ -5,6 +5,7 @@ pub mod home;
 pub mod user;
 pub mod git;
 pub mod repo;
+pub mod status;
 
 pub fn session_to_context(session:&Session) -> Context{
     let mut context = Context::new();
