@@ -1,0 +1,36 @@
+{% extends "layouts/main_layout.html" %}
+{% block title %}
+profile - GitCube
+{% endblock title %}
+{% block content %}
+<div class="repository new repo">
+	<div class="ui middle very relaxed page grid">
+		<div class="column">
+			<form class="ui form" action="/new" method="post">
+				<h3 class="ui top attached header">
+					New Organization
+				</h3>
+				<div class="ui attached segment">
+                <div class="two fields">
+					<div class="required field ">
+						<label for="org_name">Repository Name</label>
+						<input id="org_name" name="org_name" value="" autofocus="" required="">
+					</div>
+                </div>
+                    <div class="field">
+                        <label>Description</label>
+                        <textarea rows="3" name="description"></textarea>
+                        <span class="ui grey">Description of organization. Maximum 512 characters length.</span>
+                    </div>
+					<div class="inline field">
+						<label></label>
+						<button class="ui teal button">
+							Create Organization
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock content %}

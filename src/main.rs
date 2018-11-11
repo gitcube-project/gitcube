@@ -108,6 +108,10 @@ fn start_server(){
                 r.method(Method::GET).f(controllers::repo::new_repository_page);
                 r.method(Method::POST).with(controllers::repo::new_repository_action)
             })
+            .resource("/organization/new", |r|{
+                r.method(Method::GET).f(controllers::org::new_organization_page);
+                r.method(Method::POST).with(controllers::org::new_organization_action)
+            })
             .resource("/404", |r|{
                 r.method(Method::GET).f(controllers::status::page_404)
             })
