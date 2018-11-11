@@ -34,7 +34,7 @@ pub fn new_repository_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<Str
         && form.contains_key("description"){
         let uuid = req.session().get::<String>("uuid").unwrap().unwrap();
         let user_fullname = req.session().get::<String>("user_fullname").unwrap().unwrap();
-        let context = session_to_context(&req.session());
+        // let context = session_to_context(&req.session());
         // insert to db
         let repo_uuid = Uuid::new_v4().to_hyphenated().to_string();
         insert_repo(&state.connection, &Repo{

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-11-09 17:57:41
+Date: 2018-11-12 00:21:51
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -27,21 +27,6 @@ CREATE TABLE `follow` (
 
 -- ----------------------------
 -- Records of follow
--- ----------------------------
-
--- ----------------------------
--- Table structure for `orgs`
--- ----------------------------
-DROP TABLE IF EXISTS `orgs`;
-CREATE TABLE `orgs` (
-  `uuid` varchar(36) NOT NULL,
-  `name` varchar(64) NOT NULL,
-  `description` varchar(512) DEFAULT NULL,
-  PRIMARY KEY (`uuid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of orgs
 -- ----------------------------
 
 -- ----------------------------
@@ -105,6 +90,7 @@ CREATE TABLE `users` (
   `password` varchar(256) NOT NULL,
   `is_block` int(11) NOT NULL,
   `avatar` varchar(256) NOT NULL,
+  `type` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`uuid`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 

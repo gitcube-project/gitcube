@@ -1,7 +1,6 @@
 
 pub mod repo;
 pub mod user;
-pub mod org;
 
 
 pub enum Connection {

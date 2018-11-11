@@ -9,10 +9,9 @@ use ::TERA;
 use ::AppEnv;
 use super::session_to_context;
 
-use ::models::org::Org;
-use ::models::org::insert_org;
-
-use ::git::repo::git_init;
+use ::models::user::User;
+use ::models::user::UserType;
+use ::models::user::insert_user;
 
 pub fn new_organization_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let context = session_to_context(&req.session());
@@ -26,21 +25,24 @@ pub fn new_organization_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<S
         && form.contains_key("description"){
         let uuid = req.session().get::<String>("uuid").unwrap().unwrap();
         let user_fullname = req.session().get::<String>("user_fullname").unwrap().unwrap();
-        let context = session_to_context(&req.session());
         // insert to db
-        let org_uuid = Uuid::new_v4().to_hyphenated().to_string();
-        insert_org(&state.connection, &Org{
-            uuid:org_uuid.clone(),
+        insert_user(&state.connection, &User{
+            uuid:Uuid::new_v4().to_hyphenated().to_string(),
             name:form["org_name"].clone(), 
-            description:form["description"].clone()
+            fullname:form["org_name"].clone(), 
+            email:String::from(""), 
+            password:String::from(""),
+            is_block:0,
+            avatar:"/avatar/default.png".to_string(),
+            type_id:UserType::Org.to_i32()
         });
-        HttpResponse::Found().header("Location", format!("/{}/{}",&user_fullname, &form["org_name"])).finish()
+        HttpResponse::Found().header("Location", format!("/{}", &form["org_name"])).finish()
     }else{
         HttpResponse::BadRequest().finish()
     }
 }
 /*
-pub fn repo_page((req, path): (HttpRequest<AppEnv>, Path<(String,String)>)) -> HttpResponse {
+pub fn org_page((req, path): (HttpRequest<AppEnv>, Path<(String,String)>)) -> HttpResponse {
     let state = req.state();
     let repo_opt = find_repo_by_username_reponame(&state.connection, &path.0, &path.1);
 

@@ -10,6 +10,7 @@ use super::super::AppEnv;
 use super::session_to_context;
 
 use ::models::user::User;
+use ::models::user::UserType;
 use ::models::user::insert_user;
 use ::models::user::find_user_by_email;
 use ::models::user::find_user_by_fullname;
@@ -92,7 +93,8 @@ pub fn signup_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
             email:form["email"].clone(), 
             password:form["password"].clone(),
             is_block:0,
-            avatar:"/avatar/default.png".to_string()
+            avatar:"/avatar/default.png".to_string(),
+            type_id:UserType::User.to_i32()
         });
         let mut context = session_to_context(&req.session());
         context.insert("message_header", "Your user registration was successful.");
