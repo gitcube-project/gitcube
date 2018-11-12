@@ -1,7 +1,7 @@
 {% extends "user/profile.html" %}
 
 
-{% block overview %}
+{% block tabview %}
 <div class="ui container tab_header">
     <div class="ui tabular menu" style="min-width: 830px;">
         <a class="active item" href="/{{user_fullname}}">Overview</a>
@@ -13,15 +13,17 @@
 </div>
 <div class="ui divider tab_divider" style="border-bottom:none;"></div>
 <div class="ui container" style="min-width: 830px;">
-    <div class="ui container">
-        <h2 class="ui header">
-            Activity
-        </h2>
-        <div id="cal-heatmap" class="twelve wide column" style="min-width: 660px;"></div>
+    <div class="ui grid">
+        <div class="ui centered column">
+            <h2 class="ui header">
+                Activity
+            </h2>
+            <div id="cal-heatmap" class="twelve wide column" style="min-width: 660px;"></div>
+        </div>
     </div>
 </div>
 
-{% endblock overview %}
+{% endblock tabview %}
 
 {% block cal_heatmap %}
 <script type="text/javascript">

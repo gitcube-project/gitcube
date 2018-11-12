@@ -1,0 +1,41 @@
+{% extends "layouts/main_layout.html" %}
+
+{% block title %}
+profile - GitCube
+{% endblock title %}
+
+{% block css %}
+<style type="text/css">
+    .ui.container.tab_header>.menu{
+        border-bottom:none;
+    }
+    .ui.container.tab_header{
+        margin-bottom:0px;
+        border-bottom:none;
+    }
+    .ui.divider.tab_divider{
+        margin-top:0px;
+        border-bottom:none;
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<div>
+    <div class="ui container">
+        <div class="ui grid">
+            <div class="row">
+                <a href="{{cur_org_avatar}}" class="ui small image">
+                    <img src="{{cur_org_avatar}}">
+                </a>
+                <h2 class="ui header">
+                    {{ cur_org_name }}
+                    <div class="sub header">{{ cur_org_fullname }}</div>
+                </h2>
+            </div>
+        </div>
+    </div>
+    {% block tabview %}
+    {% endblock tabview %}
+</div>
+{% endblock content %}

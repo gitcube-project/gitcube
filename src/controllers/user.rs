@@ -106,42 +106,82 @@ pub fn signup_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
     }
 }
 
+pub fn profile_user((cur_user, req, path, query):(&User, &HttpRequest<AppEnv>, &Path<(String,)>, &Query<HashMap<String, String>>)) -> HttpResponse {
+    let state = req.state();
+    let mut context = session_to_context(&req.session());
+    context.insert("cur_user_name", &cur_user.name);
+    context.insert("cur_user_fullname", &cur_user.fullname);
+    context.insert("cur_user_avatar", &cur_user.avatar);
+
+    let path = match query.get("tab"){
+        None => "user/overview.html",
+        Some(caps) => {
+            if caps == "overview" {
+                "user/overview.html"
+            }else if caps == "repositories" {
+                let cur_user_repos = find_repo_by_user_uuid(&state.connection, &cur_user.uuid);
+                context.insert("cur_user_repositories", &cur_user_repos);
+                "user/repositories.html"
+            }else if caps == "stars" {
+                "user/stars.html"
+            }else if caps == "followers" {
+                "user/followers.html"
+            }else if caps == "following" {
+                "user/following.html"
+            }else{
+                "user/overview.html"
+            }
+        }
+    };
+
+    let contents = TERA.render(path, &context).unwrap();
+    
+    HttpResponse::Ok()
+        .content_type("text/html")
+        .body(&contents)
+}
+
+pub fn profile_org((cur_user, req, path, query):(&User, &HttpRequest<AppEnv>, &Path<(String,)>, &Query<HashMap<String, String>>)) -> HttpResponse {
+    let state = req.state();
+    let mut context = session_to_context(&req.session());
+    context.insert("cur_org_name", &cur_user.name);
+    context.insert("cur_org_fullname", &cur_user.fullname);
+    context.insert("cur_org_avatar", &cur_user.avatar);
+
+    let cur_org_repos = find_repo_by_user_uuid(&state.connection, &cur_user.uuid);
+    context.insert("cur_org_repositories", &cur_org_repos);
+
+    let path = match query.get("tab"){
+        None => "org/repositories.html",
+        Some(caps) => {
+            if caps == "repositories" {
+                "org/repositories.html"
+            }else{
+                "org/repositories.html"
+            }
+        }
+    };
+
+    let contents = TERA.render(path, &context).unwrap();
+    
+    HttpResponse::Ok()
+        .content_type("text/html")
+        .body(&contents)
+}
+
+
 
 pub fn profile((req, path, query):(HttpRequest<AppEnv>, Path<(String,)>, Query<HashMap<String, String>>)) -> HttpResponse {
     let state = req.state();
-    let mut context = session_to_context(&req.session());
     let user_fullname = &path.0;
-
     if let Some(cur_user) = find_user_by_fullname(&state.connection, user_fullname){
-        context.insert("cur_user_name", &cur_user.name);
-        context.insert("cur_user_fullname", &cur_user.fullname);
-
-        let path = match query.get("tab"){
-            None => "user/overview.html",
-            Some(caps) => {
-                if caps == "overview" {
-                    "user/overview.html"
-                }else if caps == "repositories" {
-                    let cur_user_repos = find_repo_by_user_uuid(&state.connection, &cur_user.uuid);
-                    context.insert("cur_user_repositories", &cur_user_repos);
-                    "user/repositories.html"
-                }else if caps == "stars" {
-                    "user/stars.html"
-                }else if caps == "followers" {
-                    "user/followers.html"
-                }else if caps == "following" {
-                    "user/following.html"
-                }else{
-                    "user/overview.html"
-                }
-            }
-        };
-
-        let contents = TERA.render(path, &context).unwrap();
-        
-        HttpResponse::Ok()
-            .content_type("text/html")
-            .body(&contents)
+        if cur_user.type_id == UserType::User.to_i32(){
+            profile_user((&cur_user, &req, &path, &query))
+        }else if cur_user.type_id == UserType::Org.to_i32(){
+            profile_org((&cur_user, &req, &path, &query))
+        }else{
+            HttpResponse::Ok().body("unknown user type")
+        }
     }else{
         HttpResponse::Ok().body("user no find")
     }

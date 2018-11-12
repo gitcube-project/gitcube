@@ -25,8 +25,8 @@ profile - GitCube
     <div class="ui container">
         <div class="ui grid">
             <div class="row">
-                <a href="{{user_avatar}}" class="ui small image">
-                    <img src="{{user_avatar}}">
+                <a href="{{cur_user_avatar}}" class="ui small image">
+                    <img src="{{cur_user_avatar}}">
                 </a>
                 <h2 class="ui header">
                     {{ cur_user_name }}
@@ -35,8 +35,8 @@ profile - GitCube
             </div>
         </div>
     </div>
-    {% block overview %}
-    {% endblock overview %}
+    {% block tabview %}
+    {% endblock tabview %}
 </div>
 <!--
 <div class="ui container">

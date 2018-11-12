@@ -1,24 +1,23 @@
-{% extends "user/profile.html" %}
+{% extends "org/profile.html" %}
 
 
 {% block tabview %}
 <div class="ui container tab_header">
     <div class="ui tabular menu">
-        <a class="item" href="/{{user_fullname}}">Overview</a>
-        <a class="active item" href="/{{user_fullname}}?tab=repositories">Repositories</a>
-        <a class="item" href="/{{user_fullname}}?tab=stars">Stars</a>
-        <a class="item" href="/{{user_fullname}}?tab=followers">Followers</a>
-        <a class="item" href="/{{user_fullname}}?tab=following">Following</a>
+        <a class="active item" href="/{{cur_org_fullname}}?tab=repositories">Repositories</a>
+        <a class="item" href="/{{cur_org_fullname}}?tab=stars">People</a>
+        <a class="item" href="/{{cur_org_fullname}}?tab=followers">Projects</a>
+        <a class="item" href="/{{cur_org_fullname}}?tab=following">Following</a>
     </div>
 </div>
 <div class="ui divider tab_divider" style="border-bottom:none;"></div>
 
 <div class="ui container">
     <div class="ui relaxed divided list">
-        {% for repo in cur_user_repositories %}
+        {% for repo in cur_org_repositories %}
         <div class="item">
             <div class="content">
-                <a class="ui middle header" href="/{{cur_user_fullname}}/{{repo.name}}">
+                <a class="ui middle header" href="/{{cur_org_fullname}}/{{repo.name}}">
                     {{repo.name}}
                     <div class="sub header">
                         {{repo.description}}
