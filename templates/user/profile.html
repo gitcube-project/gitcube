@@ -4,18 +4,46 @@
 profile - GitCube
 {% endblock title %}
 
+{% block css %}
+<style type="text/css">
+    .ui.container.tab_header>.menu{
+        border-bottom:none;
+    }
+    .ui.container.tab_header{
+        margin-bottom:0px;
+        border-bottom:none;
+    }
+    .ui.divider.tab_divider{
+        margin-top:0px;
+        border-bottom:none;
+    }
+</style>
+{% endblock css %}
+
 {% block content %}
+<div>
+    <div class="ui container">
+        <div class="ui grid">
+            <div class="row">
+                <a href="{{user_avatar}}" class="ui small image">
+                    <img src="{{user_avatar}}">
+                </a>
+                <h2 class="ui header">
+                    {{ cur_user_name }}
+                    <div class="sub header">{{ cur_user_fullname }}</div>
+                </h2>
+            </div>
+        </div>
+    </div>
+    {% block overview %}
+    {% endblock overview %}
+</div>
+<!--
 <div class="ui container">
     <div class="ui grid centered">
         <div class="three wide column">
-            <a href="{{user_avatar}}" class="ui small image">
-                <img src="{{user_avatar}}">
-            </a>
-            <h2 class="ui header">
-                {{ cur_user_name }}
-                <div class="sub header">{{ cur_user_fullname }}</div>
-            </h2>
-            <!--
+            
+
             <h5 class="ui disabled header">
                 Learning learning
             </h5>
@@ -28,7 +56,7 @@ profile - GitCube
                     <i class="location arrow icon"></i> SuZhou,China
                 </div>
             </div>
-            -->
+            
             <div class="ui divider"></div>
             <h4 class="ui header">
                 Organizations
@@ -43,9 +71,9 @@ profile - GitCube
         </div>
         
         <div class="ten wide column">
-            {% block overview %}
-            {% endblock overview %}
+            
         </div>
     </div>
 </div>
+-->
 {% endblock content %}

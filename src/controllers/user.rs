@@ -117,22 +117,22 @@ pub fn profile((req, path, query):(HttpRequest<AppEnv>, Path<(String,)>, Query<H
         context.insert("cur_user_fullname", &cur_user.fullname);
 
         let path = match query.get("tab"){
-            None => "overview.html",
+            None => "user/overview.html",
             Some(caps) => {
                 if caps == "overview" {
-                    "overview.html"
+                    "user/overview.html"
                 }else if caps == "repositories" {
                     let cur_user_repos = find_repo_by_user_uuid(&state.connection, &cur_user.uuid);
                     context.insert("cur_user_repositories", &cur_user_repos);
-                    "repositories.html"
+                    "user/repositories.html"
                 }else if caps == "stars" {
-                    "stars.html"
+                    "user/stars.html"
                 }else if caps == "followers" {
-                    "followers.html"
+                    "user/followers.html"
                 }else if caps == "following" {
-                    "following.html"
+                    "user/following.html"
                 }else{
-                    "overview.html"
+                    "user/overview.html"
                 }
             }
         };

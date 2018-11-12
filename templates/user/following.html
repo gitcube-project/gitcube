@@ -1,0 +1,18 @@
+{% extends "user/profile.html" %}
+
+
+{% block overview %}
+<div class="ui container tab_header">
+    <div class="ui tabular menu">
+        <a class="item" href="/{{user_fullname}}">Overview</a>
+        <a class="item" href="/{{user_fullname}}?tab=repositories">Repositories</a>
+        <a class="item" href="/{{user_fullname}}?tab=stars">Stars</a>
+        <a class="item" href="/{{user_fullname}}?tab=followers">Followers</a>
+        <a class="active item" href="/{{user_fullname}}?tab=following">Following</a>
+    </div>
+</div>
+<div class="ui divider tab_divider" style="border-bottom:none;"></div>
+<div class="ui container">
+    
+</div>
+{% endblock overview %}
