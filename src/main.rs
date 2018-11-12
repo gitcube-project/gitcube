@@ -92,7 +92,7 @@ fn start_server(){
             ))
             .handler("/logo", fs::StaticFiles::new("public/logo").unwrap().show_files_listing())
             .handler("/assets", fs::StaticFiles::new("public/assets").unwrap().show_files_listing())
-            .handler("/avatar", fs::StaticFiles::new("public/avatar").unwrap().show_files_listing())
+            .handler("/avatar", fs::StaticFiles::new("data/avatar").unwrap().show_files_listing())
             .resource("/signin", |r|{
                 r.method(Method::GET).f(controllers::user::signin_page);
                 r.method(Method::POST).with(controllers::user::signin_action)

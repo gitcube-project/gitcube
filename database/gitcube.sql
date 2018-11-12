@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-11-12 00:21:51
+Date: 2018-11-13 00:09:52
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -36,6 +36,7 @@ DROP TABLE IF EXISTS `org_user`;
 CREATE TABLE `org_user` (
   `org_uuid` varchar(36) NOT NULL,
   `user_uuid` varchar(36) NOT NULL,
+  `role` int(11) NOT NULL,
   PRIMARY KEY (`org_uuid`,`user_uuid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
