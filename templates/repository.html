@@ -90,12 +90,11 @@
                             branches
                             </div>
                             <div class="scrolling menu">
+                                {% for branch in branch_list %}
                                 <div class="item">
-                                    master
+                                    {{branch.name}}
                                 </div>
-                                <div class="item">
-                                    dev
-                                </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>

@@ -15,6 +15,7 @@ impl UserType{
     }
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct User{
     pub uuid:String,
     pub name:String,

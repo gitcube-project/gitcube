@@ -5,6 +5,7 @@ use std::process::Stdio;
 use super::repo::Repository;
 use super::GitObject;
 
+#[derive(Serialize, Deserialize)]
 pub struct Branch{
     name:String,
     id:String

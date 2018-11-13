@@ -14,6 +14,8 @@ use ::models::repo::insert_repo;
 use ::models::repo::find_repo_by_username_reponame;
 
 use ::git::repo::git_init;
+use ::git::repo::Repository;
+use ::git::branch::BranchExt;
 
 pub fn new_repository_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let mut context = session_to_context(&req.session());
@@ -64,10 +66,23 @@ pub fn repo_page((req, path): (HttpRequest<AppEnv>, Path<(String,String)>)) -> H
     if repo_opt.is_none(){
         return HttpResponse::BadRequest().finish();
     }
+
+    let repo = repo_opt.unwrap();
+
+    // get branches
+    let repo_obj = Repository{
+        path:format!("{git}/{uuid}",
+            git = std::env::var("GIT_PATH").expect("GIT_PATH must be set"),
+            uuid = &repo.uuid)
+    };
+
+    let branches = repo_obj.get_branches();
     
+    // build context
     let mut context = session_to_context(&req.session());
     context.insert("cur_user_fullname", &path.0);
     context.insert("cur_repo_name", &path.1);
+    context.insert("branch_list", &branches);
     let contents = TERA.render("repository.html", &context).unwrap();
     HttpResponse::Ok().body(&contents)
 }
