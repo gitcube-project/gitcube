@@ -5,6 +5,8 @@ use std::process::Stdio;
 use super::repo::Repository;
 use super::GitObject;
 
+const BRANCH_PREFIX:&'static str = "refs/heads/";
+
 #[derive(Serialize, Deserialize)]
 pub struct Branch{
     name:String,
