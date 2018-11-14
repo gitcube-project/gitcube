@@ -35,7 +35,7 @@ pub fn git_upload_pack(path:&str, in_str: &bytes::Bytes) -> Vec<u8>{
             .spawn()
             .expect("failed to execute process");
     {
-        let mut stdin = child.stdin.as_mut().expect("Failed to open stdin");
+        let stdin = child.stdin.as_mut().expect("Failed to open stdin");
         stdin.write_all(in_str).expect("Failed to write to stdin");
     }
     let output = child.wait_with_output().expect("Failed to read stdout");
@@ -52,7 +52,7 @@ pub fn git_receive_pack(path:&str, in_str: &bytes::Bytes) -> Vec<u8>{
             .spawn()
             .expect("failed to execute process");
     {
-        let mut stdin = child.stdin.as_mut().expect("Failed to open stdin");
+        let stdin = child.stdin.as_mut().expect("Failed to open stdin");
         stdin.write_all(in_str).expect("Failed to write to stdin");
     }
     let output = child.wait_with_output().expect("Failed to read stdout");
