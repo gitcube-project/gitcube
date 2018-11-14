@@ -59,8 +59,9 @@ impl BranchExt for Repository{
             if fields.len()<2{
                 continue;
             }
+
             rst.push(Branch{
-                name: fields[1].to_string(),
+                name: fields[1].trim_start_matches(BRANCH_PREFIX).to_string(),
                 id: fields[0].to_string()
             });
         }
