@@ -17,6 +17,12 @@ use ::models::user::find_user_by_fullname;
 use ::models::repo::find_repo_by_user_uuid;
 
 
+pub fn help_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
+    let context = session_to_context(&req.session());
+    let contents = TERA.render("help.html", &context).unwrap();
+    HttpResponse::Ok().body(&contents)
+}
+
 pub fn signin_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let context = session_to_context(&req.session());
     let contents = TERA.render("signin.html", &context).unwrap();

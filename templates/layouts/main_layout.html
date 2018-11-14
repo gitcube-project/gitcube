@@ -138,6 +138,8 @@
                     .dropdown();
                 $('.ui.checkbox')
                     .checkbox();
+                $('.ui.accordion')
+                    .accordion();
             });
     </script>
 
@@ -155,9 +157,8 @@
                     <i class="search link icon"></i>
                 </div>
             </div>
-            <a class="active item" href="/">Home</a>
-            <a class="item">Explore</a>
-            <a class="item">Help</a>
+            <a class="item" href="/explore">Explore</a>
+            <a class="item" href="/help">Help</a>
             {% if not uuid %}
             <div class="right item">
                 <a class="ui primary button" href="/signin">Sign in</a>
@@ -169,7 +170,7 @@
                     <i class="plus icon"></i>
                     <i class="dropdown icon"></i>
                     <div class="menu">
-                        <div class="header">Create new</div>
+                        <div class="header">Create</div>
                         <a class="item" href="/new">New repository</a>
                         <a class="item" href="/organization/new">New organization</a>
                     </div>

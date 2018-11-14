@@ -115,6 +115,9 @@ fn start_server(){
             .resource("/404", |r|{
                 r.method(Method::GET).f(controllers::status::page_404)
             })
+            .resource("/help", |r|{
+                r.method(Method::GET).f(controllers::user::help_page)
+            })
             .resource("", |r| r.f(controllers::home::index))
             .resource("/", |r| r.f(controllers::home::index))
             .resource("/{name:[0-9a-zA-Z]+}", |r| r.method(Method::GET).with(controllers::user::profile))

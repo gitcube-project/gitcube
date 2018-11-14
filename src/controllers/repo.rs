@@ -13,8 +13,9 @@ use ::models::repo::Repo;
 use ::models::repo::insert_repo;
 use ::models::repo::find_repo_by_username_reponame;
 
-use ::git::repo::git_init;
 use ::git::repo::Repository;
+use ::git::repo::init_repository;
+use ::git::repo::open_repository;
 use ::git::branch::BranchExt;
 
 pub fn new_repository_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
@@ -50,9 +51,9 @@ pub fn new_repository_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<Str
             fork_uuid:Uuid::nil().to_hyphenated().to_string()
         });
         // run git cmd
-        git_init(&format!("{git}/{uuid}",
+        init_repository(&format!("{git}/{uuid}",
             git = std::env::var("GIT_PATH").expect("GIT_PATH must be set"),
-            uuid = &repo_uuid));
+            uuid = &repo_uuid)).unwrap();
         HttpResponse::Found().header("Location", format!("/{}/{}",&user_fullname, &form["repo_name"])).finish()
     }else{
         HttpResponse::BadRequest().finish()
