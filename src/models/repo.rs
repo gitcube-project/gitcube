@@ -19,7 +19,7 @@ pub struct Repo{
 pub fn insert_repo(connection:&Connection, repo:&Repo){
     match connection{
         Connection::Mysql(conn)=>{
-            let mut stmt_insert = conn.prepare(r"INSERT INTO repos
+            let mut stmt_insert = conn.prepare(r"INSERT INTO repo
                                        (uuid, name, description, owner_uuid, create_time, is_private, is_fork, fork_uuid)
                                         VALUES
                                        (:uuid, :name, :description, :owner_uuid, :create_time, :is_private, :is_fork, :fork_uuid)").unwrap();
@@ -40,13 +40,13 @@ pub fn insert_repo(connection:&Connection, repo:&Repo){
 pub fn find_repo_by_username_reponame(connection:&Connection, user_fullname:&String, repo_name:&String) -> Option<Repo>{
     match connection{
         Connection::Mysql(conn)=>{
-            let mut stmt = conn.prepare(r"SELECT repos.uuid, repos.name, repos.description, repos.owner_uuid, repos.create_time,
-                                                repos.is_private, repos.is_fork, repos.fork_uuid
-                                                FROM repos
-                                                LEFT JOIN users
-                                                ON repos.owner_uuid=users.uuid
-                                                WHERE users.fullname=:user_fullname AND
-                                                repos.name=:repo_name").unwrap();
+            let mut stmt = conn.prepare(r"SELECT repo.uuid, repo.name, repo.description, repo.owner_uuid, repo.create_time,
+                                                repo.is_private, repo.is_fork, repo.fork_uuid
+                                                FROM repo
+                                                LEFT JOIN user
+                                                ON repo.owner_uuid=user.uuid
+                                                WHERE user.fullname=:user_fullname AND
+                                                repo.name=:repo_name").unwrap();
             let row = stmt.execute(params!{
                     "user_fullname" => user_fullname,
                     "repo_name" => repo_name
@@ -76,7 +76,7 @@ pub fn find_repo_by_user_uuid(connection:&Connection, uuid:&String) -> Vec<Repo>
     match connection{
         Connection::Mysql(conn)=>{
             let mut stmt_insert = conn.prepare(r"SELECT uuid, name, description, owner_uuid, create_time, is_private, is_fork, fork_uuid
-                                                FROM repos
+                                                FROM repo
                                                 WHERE owner_uuid=:owner_uuid").unwrap();
             let rows = stmt_insert.execute(params!{
                     "owner_uuid" => uuid
@@ -105,11 +105,11 @@ pub fn find_repo_by_user_uuid(connection:&Connection, uuid:&String) -> Vec<Repo>
 pub fn get_star_by_repo_uuid(connection:&Connection, uuid:&String) -> Result<i32, Error>{
     match connection{
         Connection::Mysql(conn)=>{
-            let mut stmt = conn.prepare(r"SELECT COUNT(repos.uuid)
-                FROM repos
+            let mut stmt = conn.prepare(r"SELECT COUNT(repo.uuid)
+                FROM repo
                 LEFT JOIN star
-                ON repos.uuid == star.repo_uuid
-                WHERE repos.uuid=:uuid")?;
+                ON repo.uuid == star.repo_uuid
+                WHERE repo.uuid=:uuid")?;
             let row = stmt.execute(params!{
                     "uuid" => uuid,
                 })?.last();
@@ -128,11 +128,11 @@ pub fn get_star_by_repo_uuid(connection:&Connection, uuid:&String) -> Result<i32
 pub fn get_watch_by_repo_uuid(connection:&Connection, uuid:&String) -> Result<i32, Error>{
     match connection{
         Connection::Mysql(conn)=>{
-            let mut stmt = conn.prepare(r"SELECT COUNT(repos.uuid)
-                FROM repos
+            let mut stmt = conn.prepare(r"SELECT COUNT(repo.uuid)
+                FROM repo
                 LEFT JOIN watch
-                ON repos.uuid == watch.repo_uuid
-                WHERE repos.uuid=:uuid")?;
+                ON repo.uuid == watch.repo_uuid
+                WHERE repo.uuid=:uuid")?;
             let row = stmt.execute(params!{
                     "uuid" => uuid,
                 })?.last();

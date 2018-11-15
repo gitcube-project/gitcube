@@ -11,15 +11,19 @@ pub mod status;
 pub fn session_to_context(session:&Session) -> Context{
     let mut context = Context::new();
 
-    let properties = vec!["uuid",
-                        "user_name",
-                        "user_fullname",
-                        "user_email",
-                        "user_avatar"];
+    // String session
+    /*
+    let properties = vec![""];
     for each in properties{
         if let Some(v) = session.get::<String>(each).unwrap(){
             context.insert(each, &v);
         }
     }
+    */
+
+    if let Some(v) = session.get::<::models::user::User>("user").unwrap(){
+        context.insert("user", &v);
+    }
+
     context
 }

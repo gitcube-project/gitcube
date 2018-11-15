@@ -4,20 +4,20 @@
 {% block tabview %}
 <div class="ui container tab_header">
     <div class="ui tabular menu">
-        <a class="active item" href="/{{cur_org_fullname}}?tab=repositories">Repositories</a>
-        <a class="item" href="/{{cur_org_fullname}}?tab=peaple">People</a>
-        <a class="item" href="/{{cur_org_fullname}}?tab=teams">Teams</a>
-        <a class="item" href="/{{cur_org_fullname}}?tab=projects">Projects</a>
+        <a class="active item" href="/{{cur_org.fullname}}?tab=repositories">Repositories</a>
+        <a class="item" href="/{{cur_org.fullname}}?tab=peaple">People</a>
+        <a class="item" href="/{{cur_org.fullname}}?tab=teams">Teams</a>
+        <a class="item" href="/{{cur_org.fullname}}?tab=projects">Projects</a>
     </div>
 </div>
 <div class="ui divider tab_divider" style="border-bottom:none;"></div>
 
 <div class="ui container">
     <div class="ui relaxed divided list">
-        {% for repo in cur_org_repositories %}
+        {% for repo in cur_org.repositories %}
         <div class="item">
             <div class="content">
-                <a class="ui middle header" href="/{{cur_org_fullname}}/{{repo.name}}">
+                <a class="ui middle header" href="/{{cur_org.fullname}}/{{repo.name}}">
                     {{repo.name}}
                     <div class="sub header">
                         {{repo.description}}

@@ -31,7 +31,7 @@ pub struct User{
 pub fn insert_user(connection:&Connection, user:&User){
     match connection{
         Connection::Mysql(conn)=>{
-            let mut stmt_insert = conn.prepare(r"INSERT INTO users
+            let mut stmt_insert = conn.prepare(r"INSERT INTO user
                                        (uuid, name, fullname, email, password, is_block, avatar, type)
                                         VALUES
                                        (:uuid, :name, :fullname, :email, :password, :is_block, :avatar, :type)").unwrap();
@@ -54,7 +54,7 @@ pub fn find_user_by_fullname(connection:&Connection, fullname:&String)->Option<U
     match connection{
         Connection::Mysql(conn)=>{
             let mut stmt = conn.prepare(r"SELECT uuid, name, fullname, email, password, is_block, avatar, type
-                                                FROM users
+                                                FROM user
                                                 WHERE fullname=:fullname").unwrap();
             let row = stmt.execute(params!{
                     "fullname" => fullname
@@ -83,7 +83,7 @@ pub fn find_user_by_uuid(connection:&Connection, uuid:&String)->Option<User>{
     match connection{
         Connection::Mysql(conn)=>{
             let mut stmt = conn.prepare(r"SELECT uuid, name, fullname, email, password, is_block, avatar, type
-                                                FROM users
+                                                FROM user
                                                 WHERE uuid=:uuid").unwrap();
             let row = stmt.execute(params!{
                     "uuid" => uuid
@@ -112,7 +112,7 @@ pub fn find_user_by_email(connection:&Connection, email:&String)->Option<User>{
     match connection{
         Connection::Mysql(conn)=>{
             let mut stmt_insert = conn.prepare(r"SELECT uuid, name, fullname, email, password, is_block, avatar, type
-                                                FROM users
+                                                FROM user
                                                 WHERE email=:email").unwrap();
             let row = stmt_insert.execute(params!{
                     "email" => email

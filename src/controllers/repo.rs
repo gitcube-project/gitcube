@@ -9,6 +9,8 @@ use ::TERA;
 use ::AppEnv;
 use super::session_to_context;
 
+use ::models::user::User;
+use ::models::user::find_user_by_fullname;
 use ::models::repo::Repo;
 use ::models::repo::insert_repo;
 use ::models::repo::find_repo_by_username_reponame;
@@ -21,8 +23,8 @@ use ::git::branch::BranchExt;
 pub fn new_repository_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let mut context = session_to_context(&req.session());
     let mut available_owners = Vec::new();
-    if let Some(v) = req.session().get::<String>("user_fullname").unwrap(){
-        available_owners.push(v);
+    if let Some(v) = req.session().get::<User>("user").unwrap(){
+        available_owners.push(v.fullname);
     }
     context.insert("available_owners", &available_owners);
     let contents = TERA.render("new_repository.html", &context).unwrap();
@@ -35,8 +37,9 @@ pub fn new_repository_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<Str
         && form.contains_key("repo_name")
         && form.contains_key("private")
         && form.contains_key("description"){
-        let uuid = req.session().get::<String>("uuid").unwrap().unwrap();
-        let user_fullname = req.session().get::<String>("user_fullname").unwrap().unwrap();
+        let user = req.session().get::<User>("user").unwrap().unwrap();
+        let uuid = user.uuid;
+        let user_fullname = user.fullname;
         // let context = session_to_context(&req.session());
         // insert to db
         let repo_uuid = Uuid::new_v4().to_hyphenated().to_string();
@@ -63,12 +66,14 @@ pub fn new_repository_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<Str
 pub fn repo_page((req, path): (HttpRequest<AppEnv>, Path<(String,String)>)) -> HttpResponse {
     let state = req.state();
     let repo_opt = find_repo_by_username_reponame(&state.connection, &path.0, &path.1);
+    let user_opt = find_user_by_fullname(&state.connection, &path.0);
 
-    if repo_opt.is_none(){
+    if repo_opt.is_none() || user_opt.is_none(){
         return HttpResponse::BadRequest().finish();
     }
 
     let repo = repo_opt.unwrap();
+    let cur_user = user_opt.unwrap();
 
     // get branches
     let repo_obj = Repository{
@@ -81,8 +86,8 @@ pub fn repo_page((req, path): (HttpRequest<AppEnv>, Path<(String,String)>)) -> H
     
     // build context
     let mut context = session_to_context(&req.session());
-    context.insert("cur_user_fullname", &path.0);
-    context.insert("cur_repo_name", &path.1);
+    context.insert("cur_user", &cur_user);
+    context.insert("cur_repo", &repo);
     context.insert("branch_list", &branches);
     let contents = TERA.render("repository.html", &context).unwrap();
     HttpResponse::Ok().body(&contents)

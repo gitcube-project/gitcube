@@ -159,7 +159,7 @@
             </div>
             <a class="item" href="/explore">Explore</a>
             <a class="item" href="/help">Help</a>
-            {% if not uuid %}
+            {% if not user %}
             <div class="right item">
                 <a class="ui primary button" href="/signin">Sign in</a>
                 <a class="ui button" href="/signup">Sign Up</a>
@@ -176,13 +176,13 @@
                     </div>
                 </div>
                 <div class="ui top right pointing dropdown item">
-                    <img class="ui avatar image" src="{{user_avatar}}">
+                    <img class="ui avatar image" src="{{user.avatar}}">
                     <i class="dropdown icon"></i>
                     <div class="menu">
-                        <div class="header">Signed in as {{user_name}}</div>
-                        <a class="item" href="/{{user_fullname}}">Profile</a>
-                        <a class="item" href="/{{user_fullname}}?tab=repositories">Repositories</a>
-                        <a class="item" href="/{{user_fullname}}?tab=stars">Stars</a>
+                        <div class="header">Signed in as {{user.name}}</div>
+                        <a class="item" href="/{{user.fullname}}">Profile</a>
+                        <a class="item" href="/{{user.fullname}}?tab=repositories">Repositories</a>
+                        <a class="item" href="/{{user.fullname}}?tab=stars">Stars</a>
                         <div class="divider"></div>
                         <a class="item" href="/help">Help</a>
                         <a class="item" href="/settings">Settings</a>

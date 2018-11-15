@@ -40,11 +40,7 @@ pub fn signin_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
             Some(v) => {
                 if v.password==form["password"]{
                     // if ok save in session
-                    req.session().set("uuid", &v.uuid).unwrap();
-                    req.session().set("user_name", &v.name).unwrap();
-                    req.session().set("user_fullname", &v.fullname).unwrap();
-                    req.session().set("user_email", &v.email).unwrap();
-                    req.session().set("user_avatar", &v.avatar).unwrap();
+                    req.session().set("user", &v).unwrap();
                     
                     HttpResponse::Found().header("Location", "/").finish()
                 }else{
@@ -115,9 +111,7 @@ pub fn signup_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
 pub fn profile_user((cur_user, req, path, query):(&User, &HttpRequest<AppEnv>, &Path<(String,)>, &Query<HashMap<String, String>>)) -> HttpResponse {
     let state = req.state();
     let mut context = session_to_context(&req.session());
-    context.insert("cur_user_name", &cur_user.name);
-    context.insert("cur_user_fullname", &cur_user.fullname);
-    context.insert("cur_user_avatar", &cur_user.avatar);
+    context.insert("cur_user", &cur_user);
 
     let path = match query.get("tab"){
         None => "user/overview.html",
@@ -150,9 +144,7 @@ pub fn profile_user((cur_user, req, path, query):(&User, &HttpRequest<AppEnv>, &
 pub fn profile_org((cur_user, req, path, query):(&User, &HttpRequest<AppEnv>, &Path<(String,)>, &Query<HashMap<String, String>>)) -> HttpResponse {
     let state = req.state();
     let mut context = session_to_context(&req.session());
-    context.insert("cur_org_name", &cur_user.name);
-    context.insert("cur_org_fullname", &cur_user.fullname);
-    context.insert("cur_org_avatar", &cur_user.avatar);
+    context.insert("cur_org", &cur_user);
 
     let cur_org_repos = find_repo_by_user_uuid(&state.connection, &cur_user.uuid);
     context.insert("cur_org_repositories", &cur_org_repos);

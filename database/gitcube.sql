@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-11-13 00:09:52
+Date: 2018-11-16 02:16:41
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -45,10 +45,10 @@ CREATE TABLE `org_user` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `repos`
+-- Table structure for `repo`
 -- ----------------------------
-DROP TABLE IF EXISTS `repos`;
-CREATE TABLE `repos` (
+DROP TABLE IF EXISTS `repo`;
+CREATE TABLE `repo` (
   `uuid` varchar(36) NOT NULL,
   `name` varchar(64) NOT NULL,
   `description` varchar(512) DEFAULT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE `repos` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of repos
+-- Records of repo
 -- ----------------------------
 
 -- ----------------------------
@@ -80,10 +80,10 @@ CREATE TABLE `star` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `users`
+-- Table structure for `user`
 -- ----------------------------
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user` (
   `uuid` varchar(36) NOT NULL,
   `name` varchar(32) NOT NULL DEFAULT '',
   `fullname` varchar(32) NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE `users` (
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of users
+-- Records of user
 -- ----------------------------
 
 -- ----------------------------

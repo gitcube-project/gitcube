@@ -23,8 +23,9 @@ pub fn new_organization_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<S
     let state = req.state();
     if form.contains_key("org_name")
         && form.contains_key("description"){
-        let uuid = req.session().get::<String>("uuid").unwrap().unwrap();
-        let user_fullname = req.session().get::<String>("user_fullname").unwrap().unwrap();
+        let user = req.session().get::<User>("user").unwrap().unwrap();
+        let uuid = user.uuid;
+        let user_fullname = user.fullname;
         // insert to db
         insert_user(&state.connection, &User{
             uuid:Uuid::new_v4().to_hyphenated().to_string(),
