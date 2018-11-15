@@ -1,4 +1,5 @@
 
+use ::error::Error;
 use mysql::chrono::prelude::NaiveDateTime;
 use super::Connection;
 
@@ -96,6 +97,53 @@ pub fn find_repo_by_user_uuid(connection:&Connection, uuid:&String) -> Vec<Repo>
                     });
             }
             rst
+        }
+    }
+}
+
+
+pub fn get_star_by_repo_uuid(connection:&Connection, uuid:&String) -> Result<i32, Error>{
+    match connection{
+        Connection::Mysql(conn)=>{
+            let mut stmt = conn.prepare(r"SELECT COUNT(repos.uuid)
+                FROM repos
+                LEFT JOIN star
+                ON repos.uuid == star.repo_uuid
+                WHERE repos.uuid=:uuid")?;
+            let row = stmt.execute(params!{
+                    "uuid" => uuid,
+                })?.last();
+            
+            match row{
+                Some(v)=>{
+                    let record = v?;
+                    Ok(record.get(0).unwrap_or(0))
+                },
+                None=> Ok(0)
+            }
+        }
+    }
+}
+
+pub fn get_watch_by_repo_uuid(connection:&Connection, uuid:&String) -> Result<i32, Error>{
+    match connection{
+        Connection::Mysql(conn)=>{
+            let mut stmt = conn.prepare(r"SELECT COUNT(repos.uuid)
+                FROM repos
+                LEFT JOIN watch
+                ON repos.uuid == watch.repo_uuid
+                WHERE repos.uuid=:uuid")?;
+            let row = stmt.execute(params!{
+                    "uuid" => uuid,
+                })?.last();
+            
+            match row{
+                Some(v)=>{
+                    let record = v?;
+                    Ok(record.get(0).unwrap_or(0))
+                },
+                None=> Ok(0)
+            }
         }
     }
 }

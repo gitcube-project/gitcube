@@ -41,6 +41,7 @@ use std::env;
 pub mod controllers;
 pub mod models;
 pub mod git;
+pub mod error;
 
 use models::Connection;
 
