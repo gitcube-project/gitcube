@@ -26,9 +26,9 @@
                 <div class="row">
                     <div class="left floated four wide column">
                         <div class="ui big breadcrumb">
-                            <a class="section">{{cur_user.fullname}}</a>
+                            <a class="section" href="/{{cur_user.fullname}}">{{cur_user.fullname}}</a>
                             <div class="divider"> / </div>
-                            <a class="section">{{cur_repo.name}}</a>
+                            <a class="section" href="/{{cur_user.fullname}}/{{cur_repo.name}}">{{cur_repo.name}}</a>
                         </div>
                     </div>
                     <div class="right floated six wide column">
@@ -123,13 +123,14 @@
                 </tr>
             </thead>
             <tbody>
+                {% for file in files.entries %}
                 <tr>
-                    <td>
-                        First
-                    </td>
-                    <td>Cell</td>
-                    <td class="right aligned">Cell</td>
+                    <td>{{file.name}}</td>
+                    <td>...</td>
+                    <td class="right aligned">...</td>
                 </tr>
+                {% endfor %}
+                
             </tbody>
         </table>
     </div>

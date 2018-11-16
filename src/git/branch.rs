@@ -14,8 +14,12 @@ pub struct Branch{
 }
 
 impl GitObject for Branch{
-    fn get_id(&self) -> String{
-        return self.id.clone();
+    fn get_id(&self) -> &str{
+        &self.id
+    }
+
+    fn get_name(&self) -> &str{
+        &self.name
     }
 }
 

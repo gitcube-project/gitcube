@@ -19,6 +19,8 @@ use ::git::repo::Repository;
 use ::git::repo::init_repository;
 use ::git::repo::open_repository;
 use ::git::branch::BranchExt;
+use ::git::GitObject;
+use ::git::tree::TreeExt;
 
 pub fn new_repository_page(req: &HttpRequest<AppEnv>) -> HttpResponse {
     let mut context = session_to_context(&req.session());
@@ -76,16 +78,19 @@ pub fn repo_page((req, path): (HttpRequest<AppEnv>, Path<(String,String)>)) -> H
     let cur_user = user_opt.unwrap();
 
     // get branches
-    let repo_obj = Repository{
-        path:format!("{git}/{uuid}",
-            git = std::env::var("GIT_PATH").expect("GIT_PATH must be set"),
-            uuid = &repo.uuid)
-    };
+    let repo_obj = open_repository(
+        &format!("{git}/{uuid}",
+        git = std::env::var("GIT_PATH").expect("GIT_PATH must be set"),
+        uuid = &repo.uuid)
+    ).unwrap();
 
     let branches = repo_obj.get_branches();
+    let main_branch = &branches[0];
+    let files = repo_obj.get_tree(main_branch.get_name(), "/");
     
     // build context
     let mut context = session_to_context(&req.session());
+    context.insert("files", &files);
     context.insert("cur_user", &cur_user);
     context.insert("cur_repo", &repo);
     context.insert("branch_list", &branches);

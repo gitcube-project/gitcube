@@ -42,19 +42,3 @@ pub fn new_organization_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<S
         HttpResponse::BadRequest().finish()
     }
 }
-/*
-pub fn org_page((req, path): (HttpRequest<AppEnv>, Path<(String,String)>)) -> HttpResponse {
-    let state = req.state();
-    let repo_opt = find_repo_by_username_reponame(&state.connection, &path.0, &path.1);
-
-    if repo_opt.is_none(){
-        return HttpResponse::BadRequest().finish();
-    }
-    
-    let mut context = session_to_context(&req.session());
-    context.insert("cur_user_fullname", &path.0);
-    context.insert("cur_repo_name", &path.1);
-    let contents = TERA.render("repository.html", &context).unwrap();
-    HttpResponse::Ok().body(&contents)
-}
-*/
