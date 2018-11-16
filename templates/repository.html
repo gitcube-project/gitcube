@@ -72,7 +72,11 @@
     </div>
 
     <div class="ui container">
-
+    {% if not files %}
+        <h1 class="ui header">
+            Empty Repository
+        </h1>
+    {% else %}
         <div class="ui grid">
             <div class="row">
                 <div class="left floated four wide column">
@@ -133,6 +137,7 @@
                 
             </tbody>
         </table>
+    {% endif %}
     </div>
 
 </div>

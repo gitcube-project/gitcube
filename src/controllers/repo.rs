@@ -84,16 +84,27 @@ pub fn repo_page((req, path): (HttpRequest<AppEnv>, Path<(String,String)>)) -> H
         uuid = &repo.uuid)
     ).unwrap();
 
-    let branches = repo_obj.get_branches();
-    let main_branch = &branches[0];
-    let files = repo_obj.get_tree(main_branch.get_name(), "/");
-    
     // build context
     let mut context = session_to_context(&req.session());
-    context.insert("files", &files);
+
+    let branches = repo_obj.get_branches();
+    if branches.len() != 0{
+        let files = repo_obj.get_tree(branches[0].get_name(), "/");
+        context.insert("files", &files);
+    }
+    
     context.insert("cur_user", &cur_user);
     context.insert("cur_repo", &repo);
     context.insert("branch_list", &branches);
     let contents = TERA.render("repository.html", &context).unwrap();
     HttpResponse::Ok().body(&contents)
+}
+
+
+pub fn star_repo((req, path): (HttpRequest<AppEnv>, Path<(String,String)>)) -> HttpResponse {
+    HttpResponse::Found().header("Location", format!("/{}/{}",&path.0, &path.1)).finish()
+}
+
+pub fn watch_repo((req, path): (HttpRequest<AppEnv>, Path<(String,String)>)) -> HttpResponse {
+    HttpResponse::Found().header("Location", format!("/{}/{}",&path.0, &path.1)).finish()
 }

@@ -77,8 +77,6 @@ fn setup_logger() -> Result<(), fern::InitError> {
 }
 
 fn establish_connection() -> Connection {
-    dotenv().ok();
-
     let database_url = env::var("DATABASE_URL")
         .expect("DATABASE_URL must be set");
     Connection::new_mysql(&database_url)
@@ -86,6 +84,10 @@ fn establish_connection() -> Connection {
 
 fn start_server(){
     info!("Web server is starting.");
+    let ip = env::var("HTTP_ADDR")
+        .expect("HTTP_ADDR must be set");
+    let port = env::var("HTTP_PORT")
+        .expect("HTTP_PORT must be set");
     server::new(|| App
             ::with_state(AppEnv { connection: establish_connection() })
             .middleware(SessionStorage::new(
@@ -123,11 +125,13 @@ fn start_server(){
             .resource("/", |r| r.f(controllers::home::index))
             .resource("/{name:[0-9a-zA-Z]+}", |r| r.method(Method::GET).with(controllers::user::profile))
             .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}", |r| r.method(Method::GET).with(controllers::repo::repo_page))
+            .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}/star", |r| r.method(Method::GET).with(controllers::repo::star_repo))
+            .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}/watch", |r| r.method(Method::GET).with(controllers::repo::watch_repo))
             .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}.git/info/refs", |r| r.method(Method::GET).with(controllers::git::git_advertise_refs))
             .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}.git/git-upload-pack", |r| r.method(Method::POST).with(controllers::git::git_upload_pack_handler))
             .resource("/{name:[0-9a-zA-Z]+}/{repo:[0-9a-zA-Z]+}.git/git-receive-pack", |r| r.method(Method::POST).with(controllers::git::git_receive_pack_handler))
     )
-    .bind("127.0.0.1:8088")
+    .bind(format!("{ip}:{port}", ip = ip, port = port))
     .unwrap()
     .run();
 }
@@ -142,6 +146,8 @@ fn main() {
             "Start web server");
         ap.parse_args_or_exit();
     }
+
+    dotenv().ok();
 
     setup_logger().unwrap();
 
