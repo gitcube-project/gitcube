@@ -4,11 +4,11 @@
 {% block tabview %}
 <div class="ui container tab_header">
     <div class="ui tabular menu">
-        <a class="item" href="/{{user.fullname}}">Overview</a>
-        <a class="item" href="/{{user.fullname}}?tab=repositories">Repositories</a>
-        <a class="item" href="/{{user.fullname}}?tab=stars">Stars</a>
-        <a class="item" href="/{{user.fullname}}?tab=followers">Followers</a>
-        <a class="active item" href="/{{user.fullname}}?tab=following">Following</a>
+        <a class="item" href="/{{cur_user.fullname}}">Overview</a>
+        <a class="item" href="/{{cur_user.fullname}}?tab=repositories">Repositories</a>
+        <a class="item" href="/{{cur_user.fullname}}?tab=stars">Stars</a>
+        <a class="item" href="/{{cur_user.fullname}}?tab=followers">Followers</a>
+        <a class="active item" href="/{{cur_user.fullname}}?tab=following">Following</a>
     </div>
 </div>
 <div class="ui divider tab_divider" style="border-bottom:none;"></div>

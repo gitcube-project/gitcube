@@ -35,7 +35,7 @@
                         <div class="ui item">
                             <div class="ui labeled button" tabindex="0">
                                 <a class="ui basic button" href="#">
-                                    <i class="eye icon"></i>Unwatch
+                                    Watch
                                 </a>
                                 <a class="ui basic label" href="#">
                                     1
@@ -43,7 +43,7 @@
                             </div>
                             <div class="ui labeled button" tabindex="0">
                                 <a class="ui basic button" href="#">
-                                    <i class="star outline icon"></i>Star
+                                    Star
                                 </a>
                                 <a class="ui basic label" href="#">
                                     0
@@ -52,12 +52,26 @@
                             
                             <div class="ui labeled button" tabindex="0">
                                 <a class="ui basic button poping up" href="#">
-                                    <img src="/assets/octicons-8.1.0/package/build/svg/git-branch.svg" height="14"/>Fork
+                                    Fork
                                 </a>
                                 <a class="ui basic label" href="#">
                                     0
                                 </a>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="right floated six wide column">
+                        <div class="ui action input">
+                            <input type="text" value="http://{{ROOT_URL}}/{{cur_user.fullname}}/{{cur_repo.name}}.git" readonly>
+                            <select class="ui compact selection dropdown">
+                                <option selected="" value="http">http</option>
+                                <option value="ssh">ssh</option>
+                            </select>
+                            <button class="ui teal icon button">
+                                <i class="copy icon"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -101,18 +115,6 @@
                                 {% endfor %}
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="right floated five wide column">
-                    <div class="ui action input">
-                        <input type="text" value="http://ww.short.url/c0opq" readonly>
-                        <select class="ui compact selection dropdown">
-                            <option selected="" value="http">http</option>
-                            <option value="ssh">ssh</option>
-                        </select>
-                        <button class="ui teal icon button">
-                            <i class="copy icon"></i>
-                        </button>
                     </div>
                 </div>
             </div>

@@ -64,8 +64,8 @@ pub fn signin_action((req, form): (HttpRequest<AppEnv>, Form<HashMap<String, Str
 
 
 pub fn signout_action(req: &HttpRequest<AppEnv>) -> HttpResponse {
-    let uuid:Option<String> = req.session().get("uuid").unwrap();
-    if uuid.is_some(){
+    let user:Option<User> = req.session().get("user").unwrap();
+    if user.is_some(){
         req.session().clear();
         let context = session_to_context(&req.session());
         let contents = TERA.render("signin.html", &context).unwrap();

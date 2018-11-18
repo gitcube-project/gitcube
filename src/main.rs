@@ -13,7 +13,7 @@ use log::{info, trace, warn};
 extern crate actix_web;
 use actix_web::{App, http::Method, fs, server};
 use actix_web::middleware::session::{SessionStorage, CookieSessionBackend};
-
+use actix_web::middleware::csrf;
 
 extern crate regex;
 
@@ -42,6 +42,7 @@ pub mod controllers;
 pub mod models;
 pub mod git;
 pub mod error;
+pub mod middleware;
 
 use models::Connection;
 
@@ -90,9 +91,11 @@ fn start_server(){
         .expect("HTTP_PORT must be set");
     server::new(|| App
             ::with_state(AppEnv { connection: establish_connection() })
+            //.middleware(csrf::CsrfFilter::new().allowed_origin("http://localhost"))
             .middleware(SessionStorage::new(
                 CookieSessionBackend::signed(&[0; 32]).secure(false)
             ))
+            .middleware(middleware::auth::Auth)
             .handler("/logo", fs::StaticFiles::new("public/logo").unwrap().show_files_listing())
             .handler("/assets", fs::StaticFiles::new("public/assets").unwrap().show_files_listing())
             .handler("/avatar", fs::StaticFiles::new("data/avatar").unwrap().show_files_listing())
