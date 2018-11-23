@@ -3,6 +3,8 @@ name = "gitcube"
 version = "0.1.0"
 authors = ["JunWang <1103870790@qq.com>"]
 edition = "2015"
+description = "Rust git service"
+license = "MIT"
 
 [dependencies]
 bytes = "0.4.10"
