@@ -147,3 +147,33 @@ pub fn get_watch_by_repo_uuid(connection:&Connection, uuid:&String) -> Result<i3
         }
     }
 }
+
+pub fn star_repo(connection:&Connection, repo:&Repo, user_uuid:&String){
+    match connection{
+        Connection::Mysql(conn)=>{
+            let mut stmt_insert = conn.prepare(r"INSERT INTO star
+                                       (user_uuid, repo_uuid)
+                                        VALUES
+                                       (:user_uuid, :repo_uuid)").unwrap();
+            stmt_insert.execute(params!{
+                    "user_uuid" => user_uuid,
+                    "repo_uuid" => &repo.uuid
+                }).unwrap();
+        }
+    }
+}
+
+pub fn watch_repo(connection:&Connection, repo:&Repo, user_uuid:&String){
+    match connection{
+        Connection::Mysql(conn)=>{
+            let mut stmt_insert = conn.prepare(r"INSERT INTO watch
+                                       (watcher_uuid, repo_uuid)
+                                        VALUES
+                                       (:watcher_uuid, :repo_uuid)").unwrap();
+            stmt_insert.execute(params!{
+                    "watcher_uuid" => user_uuid,
+                    "repo_uuid" => &repo.uuid
+                }).unwrap();
+        }
+    }
+}

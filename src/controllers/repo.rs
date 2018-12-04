@@ -102,6 +102,7 @@ pub fn repo_page((req, path): (HttpRequest<AppEnv>, Path<(String,String)>)) -> H
 
 
 pub fn star_repo((req, path): (HttpRequest<AppEnv>, Path<(String,String)>)) -> HttpResponse {
+    
     HttpResponse::Found().header("Location", format!("/{}/{}",&path.0, &path.1)).finish()
 }
 
